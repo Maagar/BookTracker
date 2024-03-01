@@ -15,6 +15,10 @@ import com.example.booktracker.ui.theme.BookTrackerTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val apiKey = BuildConfig.API_KEY
+        val supabaseURL = BuildConfig.SUPABASE_URL
+
         setContent {
             BookTrackerTheme {
                 // A surface container using the 'background' color from the theme
@@ -22,17 +26,16 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    Greeting("android")
                 }
             }
         }
     }
 }
-
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name!",
+        text = name,
         modifier = modifier
     )
 }
