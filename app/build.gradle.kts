@@ -84,11 +84,11 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     implementation(platform("io.github.jan-tennert.supabase:bom:2.1.5"))
+    implementation("io.github.jan-tennert.supabase:gotrue-kt")
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("io.github.jan-tennert.supabase:realtime-kt")
 
     implementation("io.ktor:ktor-client-android:2.3.8")
 
-
-
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 }
