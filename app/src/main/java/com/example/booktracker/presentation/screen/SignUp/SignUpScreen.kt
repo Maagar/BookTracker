@@ -75,6 +75,7 @@ fun SignUpScreen() {
                 text = stringResource(R.string.sign_up),
                 style = AppTypography.bodyLarge
             )
+
         }
     }
 }

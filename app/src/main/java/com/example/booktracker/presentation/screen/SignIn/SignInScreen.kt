@@ -1,5 +1,7 @@
 package com.example.booktracker.presentation.screen.SignIn
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,8 +12,8 @@ import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +32,7 @@ import com.example.ui.theme.AppTypography
 @Composable
 fun SignInScreen(onClickSignUp: (() -> Unit)) {
     var email by remember { mutableStateOf("") }
+    var emailError by remember { mutableStateOf<String?>(null) }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -38,19 +41,11 @@ fun SignInScreen(onClickSignUp: (() -> Unit)) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        Column {
-            Text(
-                text = "Sign in",
-                style = AppTypography.displaySmall,
-                textAlign = TextAlign.Start
-            )
-            Text(
-                text = "to BookTracker",
-                style = AppTypography.displaySmall,
-                textAlign = TextAlign.End
-            )
-        }
-
+        Text(
+            text = "Sign in\nto BookTracker",
+            style = AppTypography.displaySmall,
+            textAlign = TextAlign.Start
+        )
 
         Column {
             AuthInputField(
@@ -72,14 +67,16 @@ fun SignInScreen(onClickSignUp: (() -> Unit)) {
                 onPasswordVisibilityChange = { passwordVisible = !passwordVisible }
             )
 
-            TextButton(
-                onClick = { /*TODO*/ }
-            ) {
-                Text(
-                    text = stringResource(R.string.forgot_password),
-                    style = AppTypography.bodyMedium
+            Text(
+                text = stringResource(R.string.forgot_password),
+                style = AppTypography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(16.dp).clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { /*TODO*/ }
                 )
-            }
+            )
         }
         Button(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth(0.6f)) {
             Text(
@@ -91,10 +88,21 @@ fun SignInScreen(onClickSignUp: (() -> Unit)) {
         HorizontalDivider()
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = stringResource(R.string.new_to_booktracker), style = AppTypography.labelMedium)
-            TextButton(onClick = onClickSignUp) {
-                Text(text = stringResource(R.string.create_an_account), style = AppTypography.labelMedium)
-            }
+            Text(
+                text = stringResource(R.string.new_to_booktracker),
+                style = AppTypography.labelMedium,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(
+                text = stringResource(R.string.create_an_account),
+                style = AppTypography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onClickSignUp
+                )
+            )
         }
     }
 

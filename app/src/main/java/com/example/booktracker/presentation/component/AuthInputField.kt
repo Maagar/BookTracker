@@ -1,6 +1,7 @@
 package com.example.booktracker.presentation.component
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,11 +32,11 @@ fun AuthInputField(
     passwordVisible: Boolean = false,
     onPasswordVisibilityChange: (() -> Unit)? = null
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(4.dp)) {
         Icon(
             imageVector = mainIcon,
             contentDescription = "",
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(36.dp).padding(top = 4.dp, end = 6.dp)
         )
         OutlinedTextField(
             value = value,
