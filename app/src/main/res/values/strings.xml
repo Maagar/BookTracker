@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">BookTracker</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="sign_in_to_booktracker">Sign in to BookTracker</string>
+    <string name="sign_in">Sign in</string>
+    <string name="email">Email</string>
+    <string name="enter_email">Enter email</string>
+    <string name="password">Password</string>
+    <string name="password_is_visible">Password is visible</string>
+    <string name="password_is_not_visible">Password is not visible</string>
+    <string name="new_to_booktracker">New to BookTracker?</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="sign_up">Sign up</string>
+    <string name="username">Username</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="enter_username">Enter username</string>
 </resources>
