@@ -5,6 +5,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
     kotlin("plugin.serialization") version "2.0.0"
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -89,7 +91,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.0-beta06")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
 
-    implementation(platform("io.github.jan-tennert.supabase:bom:2.1.5"))
+    implementation(platform("io.github.jan-tennert.supabase:bom:2.5.4"))
     implementation("io.github.jan-tennert.supabase:gotrue-kt")
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("io.github.jan-tennert.supabase:realtime-kt")
@@ -98,4 +100,11 @@ dependencies {
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
 
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+}
+
+kapt {
+    correctErrorTypes = true
 }
