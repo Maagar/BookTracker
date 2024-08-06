@@ -15,4 +15,5 @@
     <string name="username">Username</string>
     <string name="repeat_password">Repeat password</string>
     <string name="enter_username">Enter username</string>
+    <string name="already_have_an_account">Already have an account?</string>
 </resources>

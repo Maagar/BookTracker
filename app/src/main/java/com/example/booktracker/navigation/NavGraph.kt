@@ -14,14 +14,18 @@ fun SetupNavGraph(
 ) {
     NavHost(navController = navController, startDestination = startDestination) {
         composable<Screen.SignIn> {
-            SignInScreen(onClickSignUp = {
+            SignInScreen(toSignUpScreen = {
                 navController.navigate(
                     Screen.SignUp
                 )
             })
         }
         composable<Screen.SignUp> {
-            SignUpScreen()
+            SignUpScreen(toSignInScreen = {
+                navController.navigate(
+                    Screen.SignIn
+                )
+            })
         }
     }
 }
