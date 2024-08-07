@@ -18,7 +18,9 @@ fun validatePassword(password: String): String? {
 }
 
 fun validateUsername(username: String): String? {
-    return if (username.length < 3) {
-        "Username must be at least 4 characters long"
+    return if (username.isEmpty()) {
+        "Username cannot be empty."
+    } else if (username.length < 3) {
+        "Username must be at least 3 characters long."
     } else null
 }

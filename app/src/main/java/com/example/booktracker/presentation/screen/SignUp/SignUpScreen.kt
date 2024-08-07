@@ -29,13 +29,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.booktracker.R
 import com.example.booktracker.presentation.component.AuthInputField
+import com.example.booktracker.utils.validateEmail
+import com.example.booktracker.utils.validatePassword
+import com.example.booktracker.utils.validateUsername
 import com.example.ui.theme.AppTypography
 
 @Composable
 fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel(), toSignInScreen: (() -> Unit)) {
     val email = viewModel.email.collectAsState(initial = "")
     val emailError = remember { mutableStateOf<String?>(null) }
-    var username by remember { mutableStateOf("") }
+    val username = viewModel.username.collectAsState(initial = "")
     val usernameError = remember { mutableStateOf<String?>(null) }
     val password = viewModel.password.collectAsState(initial = "")
     val passwordError = remember { mutableStateOf<String?>(null) }
@@ -54,8 +57,8 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel(), toSignInScreen: (
         Column {
             AuthInputField(
                 mainIcon = Icons.Outlined.Person,
-                value = username,
-                onValueChange = { username = it },
+                value = username.value,
+                onValueChange = { viewModel.onUsernameChange(it) },
                 label = stringResource(R.string.username),
                 placeholder = stringResource(R.string.enter_username),
                 errorMessage = usernameError
@@ -84,7 +87,12 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel(), toSignInScreen: (
         }
 
         Button(onClick = {
-            viewModel.onSignUp()
+            emailError.value = validateEmail(email.value)
+            passwordError.value = validatePassword(password.value)
+            usernameError.value = validateUsername(username.value)
+            if (emailError.value.isNullOrBlank() && passwordError.value.isNullOrBlank() && usernameError.value.isNullOrBlank()) {
+                viewModel.onSignUp()
+            }
         }, modifier = Modifier.fillMaxWidth(0.6f)) {
             Text(
                 text = stringResource(R.string.sign_up),

@@ -11,16 +11,22 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,10 +38,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.booktracker.R
 import com.example.booktracker.presentation.component.AuthInputField
+import com.example.booktracker.presentation.component.ErrorSnackbar
 import com.example.booktracker.utils.validateEmail
 import com.example.booktracker.utils.validatePassword
 import com.example.ui.theme.AppTypography
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignInScreen(toSignUpScreen: (() -> Unit), viewModel: SignInViewModel = hiltViewModel()) {
     val email = viewModel.email.collectAsState(initial = "")
@@ -43,8 +52,32 @@ fun SignInScreen(toSignUpScreen: (() -> Unit), viewModel: SignInViewModel = hilt
     val password = viewModel.password.collectAsState(initial = "")
     val passwordError = remember { mutableStateOf<String?>(null) }
     var passwordVisible by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val swipeState = rememberSwipeToDismissBoxState()
 
     val signInResult by viewModel.signInResult.collectAsStateWithLifecycle(initialValue = null)
+
+    SnackbarHost(hostState = snackbarHostState) { snackbarData ->
+        ErrorSnackbar(snackbarData = snackbarData, state = swipeState)
+    }
+
+    LaunchedEffect(signInResult){
+        signInResult?.let { success ->
+            if (!success) {
+                viewModel.resetPassword()
+                viewModel.resetSignInResult()
+                snackbarHostState.currentSnackbarData?.dismiss()
+                swipeState.snapTo(SwipeToDismissBoxValue.Settled)
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = "Sign in failed.",
+                        duration = SnackbarDuration.Short,
+                    )
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier.padding(24.dp),
@@ -57,7 +90,7 @@ fun SignInScreen(toSignUpScreen: (() -> Unit), viewModel: SignInViewModel = hilt
             textAlign = TextAlign.Start
         )
 
-        Column (horizontalAlignment = Alignment.End){
+        Column(horizontalAlignment = Alignment.End) {
             AuthInputField(
                 mainIcon = Icons.Outlined.Email,
                 value = email.value,
@@ -106,20 +139,6 @@ fun SignInScreen(toSignUpScreen: (() -> Unit), viewModel: SignInViewModel = hilt
                 text = stringResource(R.string.sign_in),
                 style = AppTypography.bodyLarge
             )
-        }
-
-        signInResult?.let { success ->
-            if (!success) {
-                Snackbar(action = {
-                    TextButton(
-                        onClick = { viewModel.resetSignInResult() }
-                    ) {
-                        Text(text = "Ok")
-                    }
-                }, modifier = Modifier.padding(8.dp)) {
-                    Text(text = "Sign in failed.")
-                }
-            }
         }
 
         HorizontalDivider()

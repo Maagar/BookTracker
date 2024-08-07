@@ -1,6 +1,8 @@
 package com.example.booktracker.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,7 +14,7 @@ fun SetupNavGraph(
     navController: NavHostController,
     startDestination: Screen = Screen.SignIn
 ) {
-    NavHost(navController = navController, startDestination = startDestination) {
+    NavHost(navController = navController, startDestination = startDestination, modifier = Modifier.fillMaxSize()) {
         composable<Screen.SignIn> {
             SignInScreen(toSignUpScreen = {
                 navController.navigate(
