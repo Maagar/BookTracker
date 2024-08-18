@@ -1,4 +1,4 @@
-package com.example.booktracker.presentation.screen.SignUp
+package com.example.booktracker.domain.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,11 +12,11 @@ import kotlinx.serialization.json.put
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(
+class AuthViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository
 ): ViewModel() {
     private val _email = MutableStateFlow("")
-    val email: Flow<String> = _email
+    val email:Flow<String> = _email
 
     private val _password = MutableStateFlow("")
     val password: Flow<String> = _password
@@ -24,11 +24,14 @@ class SignUpViewModel @Inject constructor(
     private val _username = MutableStateFlow("")
     val username: Flow<String> = _username
 
-    fun onEmailChange(email: String) {
+    private val _isSignedIn = MutableStateFlow<Boolean>(false)
+    val isSignedIn: Flow<Boolean> = _isSignedIn
+
+    fun onEmailChange(email: String){
         _email.value = email
     }
 
-    fun onPasswordChange(password: String) {
+    fun onPasswordChange(password: String){
         _password.value = password
     }
 
@@ -44,6 +47,25 @@ class SignUpViewModel @Inject constructor(
         _password.value = ""
     }
 
+    private val _signInResult = MutableStateFlow<Boolean?>(null)
+    val signInResult: Flow<Boolean?> = _signInResult
+
+    fun resetSignInResult() {
+        _signInResult.value = null
+    }
+
+    fun onSignIn() {
+        viewModelScope.launch{
+            _signInResult.value = authenticationRepository.signIn(
+                email = _email.value,
+                password = _password.value
+            )
+            if (_signInResult.value!!) {
+                authenticationRepository.saveToken()
+            }
+        }
+    }
+
     fun onSignUp() {
         viewModelScope.launch {
             authenticationRepository.signUp(
@@ -51,6 +73,16 @@ class SignUpViewModel @Inject constructor(
                 password = _password.value,
                 data = buildJsonObject { put("username", _username.value) }
             )
+        }
+    }
+
+    fun isUserSignedIn() {
+        viewModelScope.launch {
+            if(authenticationRepository.isUserSignedIn()) {
+                _isSignedIn.value = true
+            } else {
+                _isSignedIn.value = false
+            }
         }
     }
 }

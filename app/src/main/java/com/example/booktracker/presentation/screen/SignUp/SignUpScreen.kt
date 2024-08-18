@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.booktracker.R
+import com.example.booktracker.domain.model.AuthViewModel
 import com.example.booktracker.presentation.component.AuthInputField
 import com.example.booktracker.utils.validateEmail
 import com.example.booktracker.utils.validatePassword
@@ -35,7 +36,7 @@ import com.example.booktracker.utils.validateUsername
 import com.example.ui.theme.AppTypography
 
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel(), toSignInScreen: (() -> Unit)) {
+fun SignUpScreen(viewModel: AuthViewModel = hiltViewModel(), toSignInScreen: (() -> Unit)) {
     val email = viewModel.email.collectAsState(initial = "")
     val emailError = remember { mutableStateOf<String?>(null) }
     val username = viewModel.username.collectAsState(initial = "")

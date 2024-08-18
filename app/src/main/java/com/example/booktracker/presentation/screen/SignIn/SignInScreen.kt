@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.booktracker.R
+import com.example.booktracker.domain.model.AuthViewModel
 import com.example.booktracker.presentation.component.AuthInputField
 import com.example.booktracker.presentation.component.ErrorSnackbar
 import com.example.booktracker.utils.validateEmail
@@ -46,27 +47,31 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreen(toSignUpScreen: (() -> Unit), viewModel: SignInViewModel = hiltViewModel()) {
-    val email = viewModel.email.collectAsState(initial = "")
+fun SignInScreen(
+    toSignUpScreen: (() -> Unit),
+    toHomeScreen: (() -> Unit),
+    signInViewModel: AuthViewModel = hiltViewModel(),
+) {
+    val email = signInViewModel.email.collectAsState(initial = "")
     val emailError = remember { mutableStateOf<String?>(null) }
-    val password = viewModel.password.collectAsState(initial = "")
+    val password = signInViewModel.password.collectAsState(initial = "")
     val passwordError = remember { mutableStateOf<String?>(null) }
     var passwordVisible by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val swipeState = rememberSwipeToDismissBoxState()
 
-    val signInResult by viewModel.signInResult.collectAsStateWithLifecycle(initialValue = null)
+    val signInResult by signInViewModel.signInResult.collectAsStateWithLifecycle(initialValue = null)
 
     SnackbarHost(hostState = snackbarHostState) { snackbarData ->
         ErrorSnackbar(snackbarData = snackbarData, state = swipeState)
     }
 
-    LaunchedEffect(signInResult){
+    LaunchedEffect(signInResult) {
         signInResult?.let { success ->
             if (!success) {
-                viewModel.resetPassword()
-                viewModel.resetSignInResult()
+                signInViewModel.resetPassword()
+                signInViewModel.resetSignInResult()
                 snackbarHostState.currentSnackbarData?.dismiss()
                 swipeState.snapTo(SwipeToDismissBoxValue.Settled)
                 scope.launch {
@@ -75,6 +80,8 @@ fun SignInScreen(toSignUpScreen: (() -> Unit), viewModel: SignInViewModel = hilt
                         duration = SnackbarDuration.Short,
                     )
                 }
+            } else if (success){
+                toHomeScreen()
             }
         }
     }
@@ -94,7 +101,7 @@ fun SignInScreen(toSignUpScreen: (() -> Unit), viewModel: SignInViewModel = hilt
             AuthInputField(
                 mainIcon = Icons.Outlined.Email,
                 value = email.value,
-                onValueChange = { viewModel.onEmailChange(it) },
+                onValueChange = { signInViewModel.onEmailChange(it) },
                 label = stringResource(R.string.email),
                 placeholder = stringResource(R.string.enter_email),
                 errorMessage = emailError,
@@ -102,7 +109,7 @@ fun SignInScreen(toSignUpScreen: (() -> Unit), viewModel: SignInViewModel = hilt
             AuthInputField(
                 mainIcon = Icons.Outlined.Lock,
                 value = password.value,
-                onValueChange = { viewModel.onPasswordChange(it) },
+                onValueChange = { signInViewModel.onPasswordChange(it) },
                 label = stringResource(R.string.password),
                 placeholder = stringResource(R.string.enter_password),
                 keyboardType = KeyboardType.Password,
@@ -130,7 +137,7 @@ fun SignInScreen(toSignUpScreen: (() -> Unit), viewModel: SignInViewModel = hilt
                 emailError.value = validateEmail(email.value)
                 passwordError.value = validatePassword(password.value)
                 if (emailError.value.isNullOrBlank() && passwordError.value.isNullOrBlank()) {
-                    viewModel.onSignIn()
+                    signInViewModel.onSignIn()
                 }
             },
             modifier = Modifier.fillMaxWidth(0.6f)
