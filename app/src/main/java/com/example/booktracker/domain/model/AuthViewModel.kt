@@ -2,10 +2,14 @@ package com.example.booktracker.domain.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.booktracker.data.repository.AuthenticationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -24,8 +28,20 @@ class AuthViewModel @Inject constructor(
     private val _username = MutableStateFlow("")
     val username: Flow<String> = _username
 
-    private val _isSignedIn = MutableStateFlow<Boolean>(false)
-    val isSignedIn: Flow<Boolean> = _isSignedIn
+    private val _isSignedIn = MutableStateFlow<Boolean?>(null)
+    val isSignedIn: Flow<Boolean?> = _isSignedIn
+
+    val userState = _isSignedIn.map { hasSignedIn ->
+        when (hasSignedIn) {
+            true -> UserState.SignedIn
+            false -> UserState.NotSignedIn
+            else -> UserState.Loading
+        }
+    }.stateIn(scope = viewModelScope, started = SharingStarted.WhileSubscribed(5000), initialValue = UserState.Loading)
+
+    init {
+        checkIfUserSignedIn()
+    }
 
     fun onEmailChange(email: String){
         _email.value = email
@@ -76,13 +92,10 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun isUserSignedIn() {
+
+    private fun checkIfUserSignedIn() {
         viewModelScope.launch {
-            if(authenticationRepository.isUserSignedIn()) {
-                _isSignedIn.value = true
-            } else {
-                _isSignedIn.value = false
-            }
+            _isSignedIn.value = authenticationRepository.isUserSignedIn()
         }
     }
 }
