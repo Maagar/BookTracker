@@ -22,6 +22,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -78,18 +79,15 @@ fun AuthInputField(
             trailingIcon = {
                 if (isPasswordField && onPasswordVisibilityChange != null) {
                     val visibilityIcon =
-                        if (passwordVisible) rememberVisibilityOff() else rememberVisibility()
+                        if (passwordVisible) R.drawable.visibility_off else R.drawable.visibility
                     val description = if (passwordVisible)
                         stringResource(R.string.password_is_visible) else stringResource(R.string.password_is_not_visible)
                     IconButton(onClick = onPasswordVisibilityChange) {
-                        Icon(
-                            imageVector = visibilityIcon,
-                            contentDescription = description,
-                            modifier = Modifier.size(24.dp)
-                        )
+                        Icon(painter = painterResource(id = visibilityIcon), contentDescription = description)
                     }
                 }
             }
         )
     }
 }
+

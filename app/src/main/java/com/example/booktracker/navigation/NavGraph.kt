@@ -9,6 +9,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.booktracker.domain.model.AuthViewModel
 import com.example.booktracker.domain.model.UserState
 import com.example.booktracker.presentation.screen.Home.HomeScreen
@@ -28,6 +29,26 @@ fun SetupNavGraph(
         UserState.NotSignedIn -> Screen.SignIn
         UserState.SignedIn -> Screen.Home
     }
+    val toSignUpScreen = {
+        navController.navigate(
+            Screen.SignUp
+        ) {
+            popUpTo(Screen.SignIn) { inclusive = true }
+        }
+    }
+
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentScreen = currentBackStackEntry?.destination?.route?.let {
+        when (it) {
+            Screen.SignIn::class.qualifiedName -> Screen.SignIn
+            Screen.SignUp::class.qualifiedName -> Screen.SignUp
+            Screen.Home::class.qualifiedName -> Screen.Home
+            Screen.Loading::class.qualifiedName -> Screen.Loading
+            else -> null
+        }
+    }
+    val showBottomBar = currentScreen?.showBottomBar ?: false
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -37,13 +58,7 @@ fun SetupNavGraph(
             LoadingScreen()
         }
         composable<Screen.SignIn> {
-            SignInScreen(toSignUpScreen = {
-                navController.navigate(
-                    Screen.SignUp
-                ) {
-                    popUpTo(Screen.SignIn) { inclusive = true }
-                }
-            },
+            SignInScreen(toSignUpScreen,
                 toHomeScreen = {
                     navController.navigate(
                         Screen.Home
@@ -62,7 +77,7 @@ fun SetupNavGraph(
             })
         }
         composable<Screen.Home> {
-            HomeScreen()
+            HomeScreen(toSignUpScreen, showBottomBar = showBottomBar)
         }
     }
 }

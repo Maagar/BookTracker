@@ -7,4 +7,5 @@ interface AuthenticationRepository {
     suspend fun signUp(email: String, password: String, data: JsonObject): Boolean
     suspend fun saveToken()
     suspend fun isUserSignedIn(): Boolean
+    suspend fun signOut()
 }

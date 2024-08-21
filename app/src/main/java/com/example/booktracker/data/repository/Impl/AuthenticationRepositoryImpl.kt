@@ -56,4 +56,8 @@ class AuthenticationRepositoryImpl @Inject constructor(
             }
         } else return false
     }
+
+    override suspend fun signOut() {
+        userPreferences.clearUserSession()
+    }
 }

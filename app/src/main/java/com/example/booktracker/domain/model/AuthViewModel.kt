@@ -2,7 +2,6 @@ package com.example.booktracker.domain.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.booktracker.data.repository.AuthenticationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -96,6 +95,12 @@ class AuthViewModel @Inject constructor(
     private fun checkIfUserSignedIn() {
         viewModelScope.launch {
             _isSignedIn.value = authenticationRepository.isUserSignedIn()
+        }
+    }
+    
+    fun onSignOut() {
+        viewModelScope.launch {
+            authenticationRepository.signOut()
         }
     }
 }
