@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -40,6 +37,8 @@ import com.example.booktracker.R
 import com.example.booktracker.domain.model.AuthViewModel
 import com.example.booktracker.presentation.component.AuthInputField
 import com.example.booktracker.presentation.component.ErrorSnackbar
+import com.example.booktracker.presentation.component.icon.Lock
+import com.example.booktracker.presentation.component.icon.Mail
 import com.example.booktracker.utils.validateEmail
 import com.example.booktracker.utils.validatePassword
 import com.example.ui.theme.AppTypography
@@ -99,7 +98,7 @@ fun SignInScreen(
 
         Column(horizontalAlignment = Alignment.End) {
             AuthInputField(
-                mainIcon = Icons.Outlined.Email,
+                mainIcon = Mail,
                 value = email.value,
                 onValueChange = { signInViewModel.onEmailChange(it) },
                 label = stringResource(R.string.email),
@@ -107,7 +106,7 @@ fun SignInScreen(
                 errorMessage = emailError,
             )
             AuthInputField(
-                mainIcon = Icons.Outlined.Lock,
+                mainIcon = Lock,
                 value = password.value,
                 onValueChange = { signInViewModel.onPasswordChange(it) },
                 label = stringResource(R.string.password),

@@ -7,10 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material.icons.outlined.Lock
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +26,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.booktracker.R
 import com.example.booktracker.domain.model.AuthViewModel
 import com.example.booktracker.presentation.component.AuthInputField
+import com.example.booktracker.presentation.component.icon.Lock
+import com.example.booktracker.presentation.component.icon.Mail
+import com.example.booktracker.presentation.component.icon.Person
 import com.example.booktracker.utils.validateEmail
 import com.example.booktracker.utils.validatePassword
 import com.example.booktracker.utils.validateUsername
@@ -57,7 +56,7 @@ fun SignUpScreen(viewModel: AuthViewModel = hiltViewModel(), toSignInScreen: (()
 
         Column {
             AuthInputField(
-                mainIcon = Icons.Outlined.Person,
+                mainIcon = Person,
                 value = username.value,
                 onValueChange = { viewModel.onUsernameChange(it) },
                 label = stringResource(R.string.username),
@@ -65,7 +64,7 @@ fun SignUpScreen(viewModel: AuthViewModel = hiltViewModel(), toSignInScreen: (()
                 errorMessage = usernameError
             )
             AuthInputField(
-                mainIcon = Icons.Outlined.Email,
+                mainIcon = Mail,
                 value = email.value,
                 onValueChange = { viewModel.onEmailChange(it) },
                 label = stringResource(R.string.email),
@@ -73,7 +72,7 @@ fun SignUpScreen(viewModel: AuthViewModel = hiltViewModel(), toSignInScreen: (()
                 errorMessage = emailError
             )
             AuthInputField(
-                mainIcon = Icons.Outlined.Lock,
+                mainIcon = Lock,
                 value = password.value,
                 onValueChange = { viewModel.onPasswordChange(it) },
                 label = stringResource(R.string.password),

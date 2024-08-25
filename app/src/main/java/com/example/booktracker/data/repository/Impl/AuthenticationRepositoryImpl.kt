@@ -59,5 +59,6 @@ class AuthenticationRepositoryImpl @Inject constructor(
 
     override suspend fun signOut() {
         userPreferences.clearUserSession()
+        auth.signOut()
     }
 }

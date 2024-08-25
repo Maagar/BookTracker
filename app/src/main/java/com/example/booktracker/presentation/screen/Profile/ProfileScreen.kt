@@ -1,4 +1,4 @@
-package com.example.booktracker.presentation.screen.Home
+package com.example.booktracker.presentation.screen.Profile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,17 +10,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.booktracker.domain.model.AuthViewModel
 
 @Composable
-fun HomeScreen(toSignin: (() -> Unit), authViewModel: AuthViewModel = hiltViewModel(), showBottomBar: Boolean ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly) {
-        Text(text = "Logged In!")
+fun ProfileScreen(toSignin: (() -> Unit), authViewModel: AuthViewModel = hiltViewModel()) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Profile screen")
         Button(onClick = {
             authViewModel.onSignOut()
             toSignin()
         }) {
             Text(text = "Sign Out")
-        }
-        if(showBottomBar) {
-            Text(text = "Bottom bar shown")
         }
     }
 }

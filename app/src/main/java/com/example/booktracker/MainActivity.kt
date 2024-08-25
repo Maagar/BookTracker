@@ -27,7 +27,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
                     SetupNavGraph(navController = navController)
                 }
             }

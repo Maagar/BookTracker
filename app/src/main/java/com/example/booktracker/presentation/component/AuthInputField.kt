@@ -3,7 +3,6 @@ package com.example.booktracker.presentation.component
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
@@ -22,13 +21,14 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.booktracker.R
+import com.example.booktracker.presentation.component.icon.Visibility
+import com.example.booktracker.presentation.component.icon.Visibility_off
 
 @Composable
 fun AuthInputField(
@@ -46,11 +46,6 @@ fun AuthInputField(
     val focusRequester = remember { FocusRequester() }
     var isFocused by remember { mutableStateOf(false) }
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(4.dp)) {
-        Icon(
-            imageVector = mainIcon,
-            contentDescription = "",
-            modifier = Modifier.size(32.dp)
-        )
         Spacer(modifier = Modifier.padding(horizontal = 4.dp))
         OutlinedTextField(
             value = value,
@@ -76,17 +71,23 @@ fun AuthInputField(
                     Text(text = errorMessage.value!!)
                 }
             },
-            trailingIcon = {
-                if (isPasswordField && onPasswordVisibilityChange != null) {
+            leadingIcon = {
+                Icon(
+                    imageVector = mainIcon,
+                    contentDescription = "",
+                )
+            },
+            trailingIcon = if (isPasswordField && onPasswordVisibilityChange != null) {
+                {
                     val visibilityIcon =
-                        if (passwordVisible) R.drawable.visibility_off else R.drawable.visibility
+                        if (passwordVisible) Visibility_off else Visibility
                     val description = if (passwordVisible)
                         stringResource(R.string.password_is_visible) else stringResource(R.string.password_is_not_visible)
                     IconButton(onClick = onPasswordVisibilityChange) {
-                        Icon(painter = painterResource(id = visibilityIcon), contentDescription = description)
+                        Icon(imageVector = visibilityIcon, contentDescription = description)
                     }
                 }
-            }
+            } else null
         )
     }
 }

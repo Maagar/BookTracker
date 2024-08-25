@@ -3,33 +3,42 @@ package com.example.booktracker.presentation.component
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.booktracker.R
 import com.example.booktracker.navigation.Screen
+import com.example.booktracker.presentation.component.icon.LibraryBig
+import com.example.booktracker.presentation.component.icon.Person
+import com.example.booktracker.presentation.component.icon.Search
+import com.example.ui.theme.AppTypography
+
+sealed class ScreenItem(val screen: Screen, val imageVector: ImageVector, val label: String) {
+    object Library : ScreenItem(Screen.Library, LibraryBig, "Library")
+    object Discover : ScreenItem(Screen.Discover, Search, "Discover")
+    object Profile : ScreenItem(Screen.Profile, Person, "Profile")
+}
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
+fun BottomNavigationBar(navController: NavController, currentScreen: Screen?) {
     val items = listOf(
-        Screen.Home
+        ScreenItem.Library,
+        ScreenItem.Discover,
+        ScreenItem.Profile
     )
 
     NavigationBar {
-        val navBackStackEntry = navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry.value?.destination?.route
-
-        items.forEach { screen ->
+        items.forEach { screenItem ->
             NavigationBarItem(
-                selected = currentRoute == screen::class.simpleName,
+                selected = currentScreen == screenItem.screen,
                 onClick = {
-                    navController.navigate(screen::class.simpleName ?: "") {
-                    popUpTo(navController.graph.startDestinationId)
+                    navController.navigate(screenItem.screen) {
+                        popUpTo(navController.graph.startDestinationId)
                         launchSingleTop = true
                     }
                 },
-                icon = { Icon(painter = painterResource(id = R.drawable.book), contentDescription = null) })
+                icon = { Icon(imageVector = screenItem.imageVector, contentDescription = null) },
+                label = { Text(text = screenItem.label, style = AppTypography.labelMedium) })
         }
     }
 }

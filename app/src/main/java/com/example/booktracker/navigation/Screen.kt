@@ -3,13 +3,17 @@ package com.example.booktracker.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Screen(val showBottomBar: Boolean = false) {
+sealed class Screen(val showScaffold: Boolean = false) {
     @Serializable
     data object SignIn: Screen()
     @Serializable
     data object SignUp: Screen()
     @Serializable
-    data object Home: Screen(showBottomBar = true)
+    data object Library: Screen(showScaffold = true)
+    @Serializable
+    data object Discover: Screen(showScaffold = true)
+    @Serializable
+    data object Profile: Screen(showScaffold = true)
     @Serializable
     data object Loading: Screen()
 }
