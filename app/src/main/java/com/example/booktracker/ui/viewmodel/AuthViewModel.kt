@@ -1,8 +1,9 @@
-package com.example.booktracker.domain.model
+package com.example.booktracker.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.booktracker.data.repository.AuthenticationRepository
+import com.example.booktracker.domain.model.UserState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

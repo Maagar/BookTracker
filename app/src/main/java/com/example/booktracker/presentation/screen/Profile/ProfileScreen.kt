@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.booktracker.domain.model.AuthViewModel
+import com.example.booktracker.ui.viewmodel.AuthViewModel
 
 @Composable
 fun ProfileScreen(toSignin: (() -> Unit), authViewModel: AuthViewModel = hiltViewModel()) {

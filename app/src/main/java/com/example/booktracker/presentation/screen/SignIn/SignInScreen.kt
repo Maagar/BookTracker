@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.booktracker.R
-import com.example.booktracker.domain.model.AuthViewModel
+import com.example.booktracker.ui.viewmodel.AuthViewModel
 import com.example.booktracker.presentation.component.AuthInputField
 import com.example.booktracker.presentation.component.ErrorSnackbar
 import com.example.booktracker.presentation.component.icon.Lock

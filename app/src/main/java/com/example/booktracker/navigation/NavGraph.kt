@@ -12,7 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.booktracker.domain.model.AuthViewModel
+import com.example.booktracker.ui.viewmodel.AuthViewModel
 import com.example.booktracker.domain.model.UserState
 import com.example.booktracker.presentation.component.BottomNavigationBar
 import com.example.booktracker.presentation.screen.Discover.DiscoverScreen
