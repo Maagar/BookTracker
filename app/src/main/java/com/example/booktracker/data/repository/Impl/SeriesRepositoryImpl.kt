@@ -1,6 +1,5 @@
 package com.example.booktracker.data.repository.Impl
 
-import android.util.Log
 import com.example.booktracker.data.model.Series
 import com.example.booktracker.data.model.Volume
 import com.example.booktracker.data.network.SeriesDao
@@ -9,10 +8,10 @@ import javax.inject.Inject
 
 class SeriesRepositoryImpl @Inject constructor(private val seriesDao: SeriesDao) :
     SeriesRepository {
-    override suspend fun getSeries(): List<Series> {
-        val seriesList = seriesDao.getAllSeries()
-        Log.d("SeriesRepository", "Series from DAO: $seriesList")
-        return seriesList
+    override suspend fun getSeries(page: Int, pageSize: Int, searchQuery: String?): List<Series> {
+        val offset = page * pageSize
+        return seriesDao.getSeriesPaginated(offset, pageSize, searchQuery)
+
     }
 
     override suspend fun getVolumes(seriesId: Int): List<Volume> {

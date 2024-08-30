@@ -12,10 +12,16 @@ import javax.inject.Inject
 
 class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) {
 
-    suspend fun getAllSeries(): List<Series> = withContext(Dispatchers.IO) {
-        val response = supabaseClient.from("series").select().decodeList<Series>()
-        response
-    }
+    suspend fun getSeriesPaginated(offset: Int, limit: Int, searchQuery: String?): List<Series> =
+        withContext(Dispatchers.IO) {
+            val response =
+                supabaseClient.from("series").select {
+                    if (!searchQuery.isNullOrEmpty()) filter { ilike("title", "%$searchQuery%") }
+                    range(offset.toLong()..<offset + limit)
+                }
+                    .decodeList<Series>()
+            response
+        }
 
 
     suspend fun getAllUserVolumes(seriesId: Int): List<Volume> = withContext(Dispatchers.IO) {
