@@ -11,7 +11,7 @@ import javax.inject.Inject
 class AuthenticationRepositoryImpl @Inject constructor(
     private val auth: Auth,
     private val userPreferences: UserPreferences
-): AuthenticationRepository{
+) : AuthenticationRepository {
     override suspend fun signIn(email: String, password: String): Boolean {
         return try {
             auth.signInWith(Email) {
@@ -55,6 +55,23 @@ class AuthenticationRepositoryImpl @Inject constructor(
                 return true
             }
         } else return false
+    }
+
+    override suspend fun checkAndRefreshSession() {
+        val userSession = userPreferences.userSession.firstOrNull()
+        if (userSession != null && userSession.token.isNotEmpty()) {
+            try {
+                auth.retrieveUser(userSession.token)
+                auth.refreshCurrentSession()
+                val refreshedAccessToken = auth.currentAccessTokenOrNull()
+                if(refreshedAccessToken != null) {
+                    userPreferences.saveUserSession(refreshedAccessToken)
+                }
+            } catch (e: Exception) {
+                userPreferences.clearUserSession()
+            }
+
+        }
     }
 
     override suspend fun signOut() {

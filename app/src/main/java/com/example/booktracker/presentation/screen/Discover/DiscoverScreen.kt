@@ -2,10 +2,10 @@ package com.example.booktracker.presentation.screen.Discover
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,66 +20,81 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.booktracker.data.model.Series
 import com.example.booktracker.presentation.component.SeriesDialog
 import com.example.booktracker.presentation.screen.Discover.component.SeriesCard
+import com.example.booktracker.presentation.screen.Discover.component.SeriesListItem
 import com.example.booktracker.presentation.screen.Discover.component.SeriesSearchBar
 import com.example.booktracker.ui.viewmodel.SeriesViewModel
 
 @Composable
-fun DiscoverScreen(seriesViewModel: SeriesViewModel = hiltViewModel()) {
+fun DiscoverScreen(
+    seriesViewModel: SeriesViewModel = hiltViewModel(),
+    discoverViewModel: DiscoverViewModel = hiltViewModel()
+) {
 
-    val seriesList by seriesViewModel.series.collectAsState()
+    val seriesList by discoverViewModel.series.collectAsState()
     val volumeList by seriesViewModel.volumes.collectAsState()
 
     var selectedSeries by remember { mutableStateOf<Series?>(null) }
 
-    val listState = rememberLazyGridState()
+    val listState = rememberLazyListState()
 
-    val query by seriesViewModel.query.collectAsState()
+    val query by discoverViewModel.query.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(Unit) {
+        discoverViewModel.fetchSeries()
+    }
 
     Column {
 
         SeriesSearchBar(
             query = query,
             onQueryChange = {
-                seriesViewModel.onQueryChange(it)
-                seriesViewModel.debounceSearch()
+                discoverViewModel.onQueryChange(it)
+                discoverViewModel.debounceSearch()
             },
             onSearch = {
-                seriesViewModel.searchSeries()
+                discoverViewModel.searchSeries()
+                keyboardController?.hide()
+                focusManager.clearFocus()
+            },
+            onClose = {
+                discoverViewModel.resetQuery()
+                discoverViewModel.searchSeries()
                 keyboardController?.hide()
                 focusManager.clearFocus()
             })
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
+        LazyColumn(
             verticalArrangement = Arrangement.Top,
-            state = listState,
+            state = listState
         ) {
             items(seriesList) { series ->
-                SeriesCard(series = series, onCardClick = {
+                SeriesListItem(series = series, onItemClick = {
                     selectedSeries = series
                     seriesViewModel.fetchVolumes(series.id)
                 })
+                HorizontalDivider()
             }
         }
-    }
 
+        LaunchedEffect(listState) {
+            snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
+                val lastVisibleItem = visibleItems.lastOrNull()
+                val lastVisibleItemIndex = lastVisibleItem?.index ?: 0
+                val totalItemsCount = listState.layoutInfo.totalItemsCount
 
-
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
-            val lastVisibleItem = visibleItems.lastOrNull()
-            val lastVisibleItemIndex = lastVisibleItem?.index ?: 0
-            val totalItemsCount = listState.layoutInfo.totalItemsCount
-
-            if (lastVisibleItemIndex >= totalItemsCount - 6 && totalItemsCount > 0) {
-                seriesViewModel.fetchSeries()
+                if (lastVisibleItemIndex >= totalItemsCount - 6 && totalItemsCount > 0) {
+                    discoverViewModel.fetchSeries()
+                }
             }
         }
-    }
 
-    selectedSeries?.let {
-        SeriesDialog(series = it, volumeList = volumeList, onDismiss = { selectedSeries = null })
+        selectedSeries?.let {
+            SeriesDialog(
+                series = it,
+                volumeList = volumeList,
+                onDismiss = { selectedSeries = null })
+        }
     }
 }

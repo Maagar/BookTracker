@@ -16,7 +16,7 @@ import com.example.booktracker.ui.viewmodel.AuthViewModel
 import com.example.booktracker.domain.model.UserState
 import com.example.booktracker.presentation.component.BottomNavigationBar
 import com.example.booktracker.presentation.screen.Discover.DiscoverScreen
-import com.example.booktracker.presentation.screen.Home.LibraryScreen
+import com.example.booktracker.presentation.screen.Library.LibraryScreen
 import com.example.booktracker.presentation.screen.Loading.LoadingScreen
 import com.example.booktracker.presentation.screen.Profile.ProfileScreen
 import com.example.booktracker.presentation.screen.SignIn.SignInScreen

@@ -112,7 +112,7 @@ fun SignUpScreen(viewModel: AuthViewModel = hiltViewModel(), toSignInScreen: (()
             Text(
                 text = "Sign in",
                 style = AppTypography.labelMedium,
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,

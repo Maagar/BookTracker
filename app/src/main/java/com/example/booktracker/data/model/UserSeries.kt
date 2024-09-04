@@ -3,18 +3,13 @@ package com.example.booktracker.data.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-class Series (
+data class UserSeries(
     val id: Int,
-    val created_at: String,
     val title: String,
     val main_cover_url: String,
     val is_single_volume: Boolean,
     val release_date: String,
     val synopsis: String,
-    var isFollowing: Boolean = false
-)
-
-@Serializable
-class UserSeriesIds(
-    val series_id: Int
+    val totalVolumes: Int = 0,
+    val readVolumes: Int = 0
 )

@@ -158,7 +158,7 @@ fun SignInScreen(
             Text(
                 text = stringResource(R.string.create_an_account),
                 style = AppTypography.labelMedium,
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,

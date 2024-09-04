@@ -40,6 +40,9 @@ class AuthViewModel @Inject constructor(
     }.stateIn(scope = viewModelScope, started = SharingStarted.WhileSubscribed(5000), initialValue = UserState.Loading)
 
     init {
+        viewModelScope.launch {
+            authenticationRepository.checkAndRefreshSession()
+        }
         checkIfUserSignedIn()
     }
 
