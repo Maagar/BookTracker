@@ -1,5 +1,6 @@
 package com.example.booktracker.data.network
 
+import android.util.Log
 import com.example.booktracker.data.model.Series
 import com.example.booktracker.data.model.UserSeries
 import com.example.booktracker.data.model.UserSeriesIds
@@ -8,6 +9,7 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -50,19 +52,20 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
             val followedSeriesIds =
                 supabaseClient.from("user_series").select(Columns.list("series_id"))
                     .decodeList<UserSeriesIds>()
+            Log.d("SeriesDao", "Followed Series IDs: ${followedSeriesIds.map { it.series_id }}")
 
             if (followedSeriesIds.isEmpty()) {
                 return@withContext emptyList<UserSeries>()
             }
 
+            val seriesIds = followedSeriesIds.joinToString { it.series_id.toString() }
+
             val response =
                 supabaseClient.from("series").select(columns = columns) {
-                    followedSeriesIds.forEach { seriesId ->
-                        filter {
-                            eq("id", seriesId.series_id)
-                        }
-                        range(offset.toLong()..<offset + limit)
+                    filter {
+                        filter(column = "id", operator = FilterOperator.IN, value = "($seriesIds)")
                     }
+                    range(offset.toLong()..<offset + limit)
                 }.decodeList<UserSeries>()
             response
         }
@@ -87,5 +90,11 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
             }
             .decodeList<Volume>()
         response
+    }
+
+    suspend fun insertUserSeries(seriesId: Int): UserSeriesIds = withContext(Dispatchers.IO) {
+        supabaseClient.from("user_series")
+            .insert(UserSeriesIds(seriesId)) { select(columns = Columns.list("series_id")) }
+            .decodeSingle()
     }
 }

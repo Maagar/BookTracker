@@ -86,4 +86,15 @@ class DiscoverViewModel @Inject constructor(private val seriesRepository: Series
             }
         }
     }
+
+    fun refreshSeries(seriesId: Int) {
+        val updatedSeriesList = _series.value.mapIndexed{index, series ->
+            if (series.id == seriesId)
+                series.copy(isFollowing = !series.isFollowing)
+            else series
+        }
+        _series.value = updatedSeriesList
+    }
+
+
 }

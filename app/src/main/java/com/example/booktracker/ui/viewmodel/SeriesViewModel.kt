@@ -28,4 +28,16 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
             }
         }
     }
+
+    fun onFollowSeries(seriesId: Int, onSuccess: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val result = seriesRepository.followSeries(seriesId)
+                onSuccess(true)
+            } catch (e: Exception) {
+                onSuccess(false)
+            }
+
+        }
+    }
 }

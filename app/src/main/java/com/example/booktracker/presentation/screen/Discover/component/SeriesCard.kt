@@ -11,9 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.booktracker.data.model.Series
+import com.example.booktracker.data.model.UserSeries
 
 @Composable
-fun SeriesCard(series: Series, onCardClick: (() -> Unit) = {}) {
+fun SeriesCard(series: UserSeries, onCardClick: (() -> Unit) = {}) {
     Card(
         modifier = Modifier
             .padding(8.dp)

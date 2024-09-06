@@ -2,6 +2,7 @@ package com.example.booktracker.data.repository.Impl
 
 import com.example.booktracker.data.model.Series
 import com.example.booktracker.data.model.UserSeries
+import com.example.booktracker.data.model.UserSeriesIds
 import com.example.booktracker.data.model.Volume
 import com.example.booktracker.data.network.SeriesDao
 import com.example.booktracker.data.repository.SeriesRepository
@@ -22,5 +23,9 @@ class SeriesRepositoryImpl @Inject constructor(private val seriesDao: SeriesDao)
 
     override suspend fun getVolumes(seriesId: Int): List<Volume> {
         return seriesDao.getAllUserVolumes(seriesId)
+    }
+
+    override suspend fun followSeries(seriesId: Int): UserSeriesIds {
+        return seriesDao.insertUserSeries(seriesId)
     }
 }

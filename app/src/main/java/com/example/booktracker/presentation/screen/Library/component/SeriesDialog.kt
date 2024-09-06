@@ -1,4 +1,4 @@
-package com.example.booktracker.presentation.component
+package com.example.booktracker.presentation.screen.Library.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

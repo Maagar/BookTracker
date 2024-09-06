@@ -3,7 +3,7 @@ package com.example.booktracker.data.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-class Series (
+data class Series (
     val id: Int,
     val created_at: String,
     val title: String,
