@@ -79,6 +79,13 @@ fun DiscoverScreen(
                                 discoverViewModel.refreshSeries(series.id)
                             }
                         }
+                    },
+                    onUnfollowSeries = {
+                        seriesViewModel.onUnfollowSeries(series.id) { success ->
+                            if (success) {
+                                discoverViewModel.refreshSeries(series.id)
+                            }
+                        }
                     })
                 HorizontalDivider()
             }

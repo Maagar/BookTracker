@@ -3,7 +3,7 @@ package com.example.booktracker.presentation.screen.Library
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.booktracker.data.model.UserSeries
+import com.example.booktracker.data.model.FollowedSeries
 import com.example.booktracker.data.repository.SeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +15,8 @@ import javax.inject.Inject
 class LibraryViewModel @Inject constructor(private val seriesRepository: SeriesRepository) :
     ViewModel() {
 
-    private val _userSeries = MutableStateFlow<List<UserSeries>>(emptyList())
-    val userSeries: StateFlow<List<UserSeries>> = _userSeries
+    private val _userSeries = MutableStateFlow<List<FollowedSeries>>(emptyList())
+    val userSeries: StateFlow<List<FollowedSeries>> = _userSeries
 
     private var currentPage = 0
     private val pageSize = 20

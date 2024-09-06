@@ -1,15 +1,14 @@
 package com.example.booktracker.data.network
 
 import android.util.Log
+import com.example.booktracker.data.model.FollowedSeries
 import com.example.booktracker.data.model.Series
-import com.example.booktracker.data.model.UserSeries
 import com.example.booktracker.data.model.UserSeriesIds
 import com.example.booktracker.data.model.Volume
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
-import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -37,36 +36,25 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
             seriesList
         }
 
-    suspend fun getFollowedSeries(offset: Int, limit: Int): List<UserSeries> =
+    suspend fun getFollowedSeries(offset: Int, limit: Int): List<FollowedSeries> =
         withContext(Dispatchers.IO) {
             val columns = Columns.raw(
                 """
                     id,
-                    title,
-                    main_cover_url,
-                    is_single_volume,
-                    release_date,
-                    synopsis
+                    series(
+                        id,
+                        title,
+                        main_cover_url,
+                        is_single_volume,
+                        release_date,
+                        synopsis
+                    )
                 """.trimIndent()
             )
-            val followedSeriesIds =
-                supabaseClient.from("user_series").select(Columns.list("series_id"))
-                    .decodeList<UserSeriesIds>()
-            Log.d("SeriesDao", "Followed Series IDs: ${followedSeriesIds.map { it.series_id }}")
-
-            if (followedSeriesIds.isEmpty()) {
-                return@withContext emptyList<UserSeries>()
-            }
-
-            val seriesIds = followedSeriesIds.joinToString { it.series_id.toString() }
-
             val response =
-                supabaseClient.from("series").select(columns = columns) {
-                    filter {
-                        filter(column = "id", operator = FilterOperator.IN, value = "($seriesIds)")
-                    }
+                supabaseClient.from("user_series").select(columns = columns) {
                     range(offset.toLong()..<offset + limit)
-                }.decodeList<UserSeries>()
+                }.decodeList<FollowedSeries>()
             response
         }
 
@@ -97,4 +85,17 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
             .insert(UserSeriesIds(seriesId)) { select(columns = Columns.list("series_id")) }
             .decodeSingle()
     }
+
+    suspend fun deleteUserSeries(seriesId: Int): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val response = supabaseClient.from("user_series").delete {
+                filter { eq("series_id", seriesId) }
+            }
+            true
+        } catch (e: Exception) {
+            Log.e("DeleteError", "Error deleting user series", e)
+            false
+        }
+    }
+
 }

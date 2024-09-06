@@ -13,3 +13,9 @@ data class UserSeries(
     val totalVolumes: Int = 0,
     val readVolumes: Int = 0
 )
+
+@Serializable
+data class FollowedSeries(
+    val id: Int,
+    val series: UserSeries
+)

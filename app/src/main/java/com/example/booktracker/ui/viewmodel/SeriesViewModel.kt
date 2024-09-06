@@ -40,4 +40,15 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
 
         }
     }
+
+    fun onUnfollowSeries(seriesId: Int, onSuccess: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val result = seriesRepository.unfollowSeries(seriesId)
+                onSuccess(true)
+            } catch (e: Exception) {
+                onSuccess(false)
+            }
+        }
+    }
 }

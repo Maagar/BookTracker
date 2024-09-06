@@ -27,7 +27,7 @@ fun LibraryScreen(
     ) {
         LazyVerticalGrid(columns = GridCells.Fixed(3), verticalArrangement = Arrangement.Top) {
             items(userSeries) { series ->
-                SeriesCard(series = series)
+                SeriesCard(series = series.series)
             }
         }
 

@@ -1,11 +1,9 @@
 package com.example.booktracker.presentation.screen.Discover.component
 
-import android.graphics.drawable.Drawable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -20,11 +18,15 @@ import coil.compose.AsyncImage
 import com.example.booktracker.R
 import com.example.booktracker.data.model.Series
 import com.example.booktracker.presentation.component.icon.Add_box
-import com.example.booktracker.presentation.component.icon.Close
 import com.example.ui.theme.AppTypography
 
 @Composable
-fun SeriesListItem(series: Series, onItemClick: (Series) -> Unit, onFollowSeries: () -> Unit) {
+fun SeriesListItem(
+    series: Series,
+    onItemClick: (Series) -> Unit,
+    onFollowSeries: () -> Unit,
+    onUnfollowSeries: () -> Unit
+) {
     ListItem(
         modifier = Modifier.clickable { onItemClick(series) },
         headlineContent = { Text(text = series.title, style = AppTypography.titleMedium) },
@@ -39,7 +41,13 @@ fun SeriesListItem(series: Series, onItemClick: (Series) -> Unit, onFollowSeries
         },
         trailingContent = {
             IconButton(
-                onClick = { /*TODO*/ }, modifier = Modifier
+                onClick = {
+                    if (series.isFollowing) {
+                        onUnfollowSeries()
+                    } else {
+                        onFollowSeries()
+                    }
+                }, modifier = Modifier
                     .size(72.dp)
                     .padding(8.dp)
             ) {
@@ -48,13 +56,11 @@ fun SeriesListItem(series: Series, onItemClick: (Series) -> Unit, onFollowSeries
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )
-                else IconButton(onClick = onFollowSeries) {
-                    Icon(
-                        imageVector = Add_box,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                }
+                else Icon(
+                    imageVector = Add_box,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.secondary
+                )
 
             }
         }
