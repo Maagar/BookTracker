@@ -25,7 +25,7 @@ import com.example.booktracker.ui.viewmodel.SeriesViewModel
 
 @Composable
 fun DiscoverScreen(
-    seriesViewModel: SeriesViewModel = hiltViewModel(),
+    seriesViewModel: SeriesViewModel,
     discoverViewModel: DiscoverViewModel = hiltViewModel()
 ) {
 

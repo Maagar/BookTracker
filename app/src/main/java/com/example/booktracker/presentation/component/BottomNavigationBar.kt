@@ -29,12 +29,18 @@ fun BottomNavigationBar(navController: NavController, currentScreen: Screen?) {
 
     NavigationBar {
         items.forEach { screenItem ->
+            val isSelected = currentScreen == screenItem.screen
             NavigationBarItem(
-                selected = currentScreen == screenItem.screen,
+                selected = isSelected,
                 onClick = {
-                    navController.navigate(screenItem.screen) {
-                        popUpTo(navController.graph.startDestinationId)
-                        launchSingleTop = true
+                    if (!isSelected){
+                        navController.navigate(screenItem.screen) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
                 },
                 icon = { Icon(imageVector = screenItem.imageVector, contentDescription = null) },

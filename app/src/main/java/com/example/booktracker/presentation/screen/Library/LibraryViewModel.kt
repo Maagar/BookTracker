@@ -27,6 +27,13 @@ class LibraryViewModel @Inject constructor(private val seriesRepository: SeriesR
         fetchFollowedSeries()
     }
 
+    fun refreshSeries() {
+        _userSeries.value = emptyList()
+        isLastPage = false
+        currentPage = 0
+        fetchFollowedSeries()
+    }
+
     fun fetchFollowedSeries() {
         if (isLoading || isLastPage) return
 

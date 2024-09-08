@@ -21,11 +21,13 @@ import com.example.booktracker.presentation.screen.Loading.LoadingScreen
 import com.example.booktracker.presentation.screen.Profile.ProfileScreen
 import com.example.booktracker.presentation.screen.SignIn.SignInScreen
 import com.example.booktracker.presentation.screen.SignUp.SignUpScreen
+import com.example.booktracker.ui.viewmodel.SeriesViewModel
 
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
-    authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel: AuthViewModel = hiltViewModel(),
+    seriesViewModel: SeriesViewModel = hiltViewModel()
 ) {
     val userState by authViewModel.userState.collectAsState()
 
@@ -102,10 +104,10 @@ fun SetupNavGraph(
                 })
             }
             composable<Screen.Library> {
-                LibraryScreen()
+                LibraryScreen(seriesViewModel)
             }
             composable<Screen.Discover> {
-                DiscoverScreen()
+                DiscoverScreen(seriesViewModel)
             }
             composable<Screen.Profile> {
                 ProfileScreen(toSignInScreen)

@@ -18,6 +18,9 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
     private val _volumes = MutableStateFlow<List<Volume>>(emptyList())
     val volumes: StateFlow<List<Volume>> = _volumes
 
+    private val _seriesRefreshFlag = MutableStateFlow(false)
+    val seriesRefreshFlag: StateFlow<Boolean> = _seriesRefreshFlag
+
     fun fetchVolumes(seriesId: Int) {
         viewModelScope.launch {
             try {
@@ -34,10 +37,12 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
             try {
                 val result = seriesRepository.followSeries(seriesId)
                 onSuccess(true)
+                Log.d("onFollowSeries", "Refresh Flag: $_seriesRefreshFlag")
+
+                _seriesRefreshFlag.value = true
             } catch (e: Exception) {
                 onSuccess(false)
             }
-
         }
     }
 
@@ -46,9 +51,17 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
             try {
                 val result = seriesRepository.unfollowSeries(seriesId)
                 onSuccess(true)
+                _seriesRefreshFlag.value = true
+                Log.d("onUnFollowSeries", "Refresh Flag: $_seriesRefreshFlag")
             } catch (e: Exception) {
                 onSuccess(false)
             }
         }
     }
+
+    fun resetRefreshFlag() {
+        _seriesRefreshFlag.value = false
+        Log.d("resetRefreshFlag", "Refresh Flag: ${_seriesRefreshFlag.value}")
+    }
+
 }
