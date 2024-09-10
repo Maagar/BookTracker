@@ -10,12 +10,12 @@ data class UserSeries(
     val is_single_volume: Boolean,
     val release_date: String,
     val synopsis: String,
-    val totalVolumes: Int = 0,
-    val readVolumes: Int = 0
+    var total_volumes_released: Int
 )
 
 @Serializable
 data class FollowedSeries(
     val id: Int,
+    val volumes_read_count: Int,
     val series: UserSeries
 )

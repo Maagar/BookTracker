@@ -41,13 +41,15 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
             val columns = Columns.raw(
                 """
                     id,
+                    volumes_read_count,
                     series(
                         id,
                         title,
                         main_cover_url,
                         is_single_volume,
                         release_date,
-                        synopsis
+                        synopsis,
+                        total_volumes_released
                     )
                 """.trimIndent()
             )
@@ -55,6 +57,7 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
                 supabaseClient.from("user_series").select(columns = columns) {
                     range(offset.toLong()..<offset + limit)
                 }.decodeList<FollowedSeries>()
+
             response
         }
 
@@ -88,7 +91,7 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
 
     suspend fun deleteUserSeries(seriesId: Int): Boolean = withContext(Dispatchers.IO) {
         try {
-            val response = supabaseClient.from("user_series").delete {
+            supabaseClient.from("user_series").delete {
                 filter { eq("series_id", seriesId) }
             }
             true
