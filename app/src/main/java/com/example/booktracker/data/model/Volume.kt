@@ -8,12 +8,16 @@ data class Volume(
     val title: String,
     val cover_url: String,
     val volume_number: Int,
-    val user_volumes: List<UserVolumes> = emptyList()
+    private val user_volumes: List<UserVolumes> = emptyList()
 ) {
-    val timesRead: Int get() = user_volumes.sumOf { it.times_read ?: 0 }
+    val userVolumes: UserVolumes
+        get() = UserVolumes(
+            user_volumes.sumOf { it.times_read ?: 0 },
+            user_volumes.any { it.owned })
 }
 
 @Serializable
 data class UserVolumes(
-    val times_read: Int? = 0
+    val times_read: Int = 0,
+    val owned: Boolean = false
 )

@@ -44,6 +44,7 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
                     volumes_read_count,
                     series(
                         id,
+                        created_at,
                         title,
                         main_cover_url,
                         is_single_volume,
@@ -69,8 +70,9 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
             title,
             cover_url,
             volume_number,
-            user_volumes (
-                times_read
+            user_volumes(
+                times_read,
+                owned
             )
         """.trimIndent()
         )

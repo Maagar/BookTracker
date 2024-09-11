@@ -21,6 +21,13 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
     private val _seriesRefreshFlag = MutableStateFlow(false)
     val seriesRefreshFlag: StateFlow<Boolean> = _seriesRefreshFlag
 
+    private val _dialogState = MutableStateFlow(0)
+    val dialogState: StateFlow<Int> = _dialogState
+
+    fun switchTab(index: Int) {
+        _dialogState.value = index
+    }
+
     fun fetchVolumes(seriesId: Int) {
         viewModelScope.launch {
             try {

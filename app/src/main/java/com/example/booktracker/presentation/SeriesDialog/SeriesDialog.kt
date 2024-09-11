@@ -1,4 +1,4 @@
-package com.example.booktracker.presentation.component
+package com.example.booktracker.presentation.SeriesDialog
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,14 +23,21 @@ import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.example.booktracker.data.model.Series
 import com.example.booktracker.data.model.Volume
+import com.example.booktracker.presentation.SeriesDialog.component.DialogTabs
+import com.example.booktracker.presentation.SeriesDialog.component.VolumeListItem
 import com.example.ui.theme.AppTypography
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SeriesDialog(
+    modifier: Modifier = Modifier,
     series: Series,
+    totalVolumes: Int = series.total_volumes_released,
+    readVolumes: Int,
     volumeList: List<Volume>,
     onDismiss: (() -> Unit),
-    modifier: Modifier = Modifier
+    dialogState: Int,
+    onTabClick: (Int) -> Unit
 ) {
     Dialog(
         onDismissRequest = onDismiss,
@@ -41,7 +51,7 @@ fun SeriesDialog(
         ) {
             Column(
                 modifier = modifier.padding(8.dp),
-                verticalArrangement = Arrangement.SpaceAround
+                verticalArrangement = Arrangement.Top
             ) {
                 Row(
                     modifier = modifier.padding(8.dp),
@@ -51,18 +61,29 @@ fun SeriesDialog(
 
                     Text(text = series.title, style = AppTypography.titleMedium)
                 }
-                LazyColumn {
-                    items(volumeList) { volume ->
-                        Row {
-                            AsyncImage(model = volume.cover_url, contentDescription = null)
-                            Column {
-                                Text(text = volume.title)
-                                Text(text = "Times read: ${volume.timesRead}")
-                            }
-                            
+
+                val progress = if (totalVolumes > 0) {
+                    readVolumes.toFloat() / totalVolumes.toFloat()
+                } else 0f
+                LinearProgressIndicator(
+                    modifier = Modifier.fillMaxWidth(),
+                    progress = {progress}
+                )
+                DialogTabs(
+                    state = dialogState,
+                    titles = listOf("VOLUMES", "ABOUT"),
+                    onTabClick = { newIndex -> onTabClick(newIndex) })
+                if (dialogState == 0) {
+                    LazyColumn {
+                        items(volumeList) { volume ->
+                            VolumeListItem(volume)
+                            HorizontalDivider()
                         }
                     }
+                } else {
+
                 }
+
 
             }
         }

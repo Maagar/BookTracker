@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.booktracker.data.model.Series
-import com.example.booktracker.presentation.component.SeriesDialog
+import com.example.booktracker.presentation.SeriesDialog.SeriesDialog
 import com.example.booktracker.presentation.screen.Discover.component.SeriesListItem
 import com.example.booktracker.presentation.screen.Discover.component.SeriesSearchBar
 import com.example.booktracker.ui.viewmodel.SeriesViewModel
@@ -39,6 +39,8 @@ fun DiscoverScreen(
     val query by discoverViewModel.query.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+
+    val dialogState by seriesViewModel.dialogState.collectAsState()
 
     LaunchedEffect(Unit) {
         discoverViewModel.fetchSeries()
@@ -106,8 +108,13 @@ fun DiscoverScreen(
         selectedSeries?.let {
             SeriesDialog(
                 series = it,
+                readVolumes = volumeList.count{it.userVolumes.times_read > 0},
                 volumeList = volumeList,
-                onDismiss = { selectedSeries = null })
+                onDismiss = { selectedSeries = null },
+                dialogState = dialogState,
+                onTabClick = {newIndex ->
+                    seriesViewModel.switchTab(newIndex)
+                })
         }
     }
 }

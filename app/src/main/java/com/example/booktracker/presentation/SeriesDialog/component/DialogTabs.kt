@@ -1,0 +1,41 @@
+package com.example.booktracker.presentation.SeriesDialog.component
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DialogTabs(state: Int, titles: List<String>, onTabClick: (Int) -> Unit) {
+    SecondaryTabRow(
+        selectedTabIndex = state,
+        modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
+    ) {
+        titles.forEachIndexed { index, title ->
+            // Custom Tab with centered text and no ripple effect
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()  // Ensures the box takes up full available width
+                    .clickable(
+                        onClick = { onTabClick(index) },
+                        indication = null,  // No ripple effect
+                        interactionSource = remember { MutableInteractionSource() }
+                    )
+                    .padding(8.dp),  // Add padding inside the tab
+                contentAlignment = Alignment.Center  // Centers the content inside the Box
+            ) {
+                Text(text = title, maxLines = 1)
+            }
+        }
+    }
+}
