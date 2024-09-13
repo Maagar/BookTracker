@@ -2,6 +2,7 @@ package com.example.booktracker.data.repository.Impl
 
 import com.example.booktracker.data.model.FollowedSeries
 import com.example.booktracker.data.model.Series
+import com.example.booktracker.data.model.SeriesInfo
 import com.example.booktracker.data.model.UserSeriesIds
 import com.example.booktracker.data.model.Volume
 import com.example.booktracker.data.network.SeriesDao
@@ -19,6 +20,10 @@ class SeriesRepositoryImpl @Inject constructor(private val seriesDao: SeriesDao)
     override suspend fun getFollowedSeries(page: Int, pageSize: Int): List<FollowedSeries> {
         val offset = page * pageSize
         return seriesDao.getFollowedSeries(offset, pageSize)
+    }
+
+    override suspend fun getSeriesInfo(seriesId: Int): SeriesInfo {
+        return seriesDao.getSeriesInfo(seriesId)
     }
 
     override suspend fun getVolumes(seriesId: Int): List<Volume> {

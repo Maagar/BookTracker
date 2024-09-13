@@ -3,6 +3,7 @@ package com.example.booktracker.data.network
 import android.util.Log
 import com.example.booktracker.data.model.FollowedSeries
 import com.example.booktracker.data.model.Series
+import com.example.booktracker.data.model.SeriesInfo
 import com.example.booktracker.data.model.UserSeriesIds
 import com.example.booktracker.data.model.Volume
 import io.github.jan.supabase.SupabaseClient
@@ -32,7 +33,6 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
             seriesList.forEach { series ->
                 series.isFollowing = followedSeriesIds.contains(series.id)
             }
-
             seriesList
         }
 
@@ -61,6 +61,38 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
 
             response
         }
+
+    suspend fun getSeriesInfo(seriesId: Int): SeriesInfo = withContext(Dispatchers.IO) {
+        val columns = Columns.raw(
+            """
+                id,
+                series_authors(
+                    id,
+                    authors(
+                        full_name
+                    )
+                ),
+                series_publishers(
+                    id,
+                    publishers(
+                        name
+                    )
+                ),
+                series_tags(
+                    id,
+                    tags(
+                        name
+                    )
+                )
+            """.trimIndent()
+        )
+        val response = supabaseClient.from("series")
+            .select(columns) {
+                filter { eq("id", seriesId) }
+            }.decodeSingle<SeriesInfo>()
+        Log.d("test", "Response: $response")
+        response
+    }
 
 
     suspend fun getAllUserVolumes(seriesId: Int): List<Volume> = withContext(Dispatchers.IO) {

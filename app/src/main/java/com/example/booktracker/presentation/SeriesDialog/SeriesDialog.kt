@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
@@ -22,16 +22,18 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.example.booktracker.data.model.Series
+import com.example.booktracker.data.model.SeriesInfo
 import com.example.booktracker.data.model.Volume
+import com.example.booktracker.presentation.SeriesDialog.component.AboutSeries
 import com.example.booktracker.presentation.SeriesDialog.component.DialogTabs
 import com.example.booktracker.presentation.SeriesDialog.component.VolumeListItem
 import com.example.ui.theme.AppTypography
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SeriesDialog(
     modifier: Modifier = Modifier,
     series: Series,
+    seriesInfo: SeriesInfo,
     totalVolumes: Int = series.total_volumes_released,
     readVolumes: Int,
     volumeList: List<Volume>,
@@ -51,15 +53,33 @@ fun SeriesDialog(
         ) {
             Column(
                 modifier = modifier.padding(8.dp),
-                verticalArrangement = Arrangement.Top
+                verticalArrangement = Arrangement.Top,
             ) {
                 Row(
-                    modifier = modifier.padding(8.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = modifier
+                        .padding(8.dp)
+                        .fillMaxWidth()
                 ) {
-                    AsyncImage(model = series.main_cover_url, contentDescription = null)
+                    AsyncImage(
+                        model = series.main_cover_url,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .weight(0.4f)
+                            .wrapContentSize()
+                    )
 
-                    Text(text = series.title, style = AppTypography.titleMedium)
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 8.dp).weight(0.6f),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+
+                        Text(text = series.title, style = AppTypography.titleLarge)
+                        Text(text = "Volumes: ${series.total_volumes_released}")
+                        Text(text = "Author: ${seriesInfo.authorList.joinToString(", ")}")
+                        Text(text = "Publisher: ${seriesInfo.publisherList.joinToString(", ")}")
+
+                    }
                 }
 
                 val progress = if (totalVolumes > 0) {
@@ -67,7 +87,7 @@ fun SeriesDialog(
                 } else 0f
                 LinearProgressIndicator(
                     modifier = Modifier.fillMaxWidth(),
-                    progress = {progress}
+                    progress = { progress }
                 )
                 DialogTabs(
                     state = dialogState,
@@ -81,7 +101,7 @@ fun SeriesDialog(
                         }
                     }
                 } else {
-
+                    AboutSeries(series, seriesInfo)
                 }
 
 

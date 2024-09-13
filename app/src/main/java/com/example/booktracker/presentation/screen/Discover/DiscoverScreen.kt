@@ -42,6 +42,8 @@ fun DiscoverScreen(
 
     val dialogState by seriesViewModel.dialogState.collectAsState()
 
+    val seriesInfo by seriesViewModel.seriesInfo.collectAsState()
+
     LaunchedEffect(Unit) {
         discoverViewModel.fetchSeries()
     }
@@ -74,6 +76,7 @@ fun DiscoverScreen(
                 SeriesListItem(series = series, onItemClick = {
                     selectedSeries = series
                     seriesViewModel.fetchVolumes(series.id)
+                    seriesViewModel.fetchSeriesInfo(series.id)
                 },
                     onFollowSeries = {
                         seriesViewModel.onFollowSeries(series.id) { success ->
@@ -108,11 +111,15 @@ fun DiscoverScreen(
         selectedSeries?.let {
             SeriesDialog(
                 series = it,
-                readVolumes = volumeList.count{it.userVolumes.times_read > 0},
+                seriesInfo = seriesInfo,
+                readVolumes = volumeList.count { it.userVolumes.times_read > 0 },
                 volumeList = volumeList,
-                onDismiss = { selectedSeries = null },
+                onDismiss = {
+                    selectedSeries = null
+                    seriesViewModel.clearVolumeList()
+                },
                 dialogState = dialogState,
-                onTabClick = {newIndex ->
+                onTabClick = { newIndex ->
                     seriesViewModel.switchTab(newIndex)
                 })
         }
