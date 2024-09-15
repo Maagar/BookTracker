@@ -6,6 +6,7 @@ import com.example.booktracker.data.model.Series
 import com.example.booktracker.data.model.SeriesInfo
 import com.example.booktracker.data.model.UserSeriesIds
 import com.example.booktracker.data.model.Volume
+import com.example.booktracker.data.model.VolumeToUpsert
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
@@ -103,6 +104,7 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
             cover_url,
             volume_number,
             user_volumes(
+                id,
                 times_read,
                 owned
             )
@@ -131,6 +133,16 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
             true
         } catch (e: Exception) {
             Log.e("DeleteError", "Error deleting user series", e)
+            false
+        }
+    }
+
+    suspend fun upsertUserVolume(volumeToUpsert: VolumeToUpsert): Boolean = withContext(Dispatchers.IO) {
+        try {
+            supabaseClient.from("user_volumes").update(volumeToUpsert)
+            true
+        } catch (e: Exception) {
+            e.message?.let { Log.e("UpsertError", it) }
             false
         }
     }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.booktracker.data.model.SeriesInfo
 import com.example.booktracker.data.model.Volume
+import com.example.booktracker.data.model.VolumeToUpsert
 import com.example.booktracker.data.repository.SeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -73,7 +74,6 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
                 val result = seriesRepository.unfollowSeries(seriesId)
                 onSuccess(true)
                 _seriesRefreshFlag.value = true
-                Log.d("onUnFollowSeries", "Refresh Flag: $_seriesRefreshFlag")
             } catch (e: Exception) {
                 onSuccess(false)
             }
@@ -83,6 +83,18 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
     fun resetRefreshFlag() {
         _seriesRefreshFlag.value = false
         Log.d("resetRefreshFlag", "Refresh Flag: ${_seriesRefreshFlag.value}")
+    }
+
+    fun onVolumeStatusChange(upsert: VolumeToUpsert, onSuccess: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            try {
+                seriesRepository.upsertUserVolume(upsert)
+                onSuccess(true)
+                _seriesRefreshFlag.value = true
+            } catch (e: Exception) {
+                onSuccess(false)
+            }
+        }
     }
 
 }

@@ -12,12 +12,22 @@ data class Volume(
 ) {
     val userVolumes: UserVolumes
         get() = UserVolumes(
-            user_volumes.sumOf { it.times_read ?: 0 },
+            user_volumes.firstOrNull()?.id,
+            user_volumes.sumOf { it.times_read },
             user_volumes.any { it.owned })
 }
 
 @Serializable
 data class UserVolumes(
+    val id: Int? = null,
     val times_read: Int = 0,
     val owned: Boolean = false
+)
+
+@Serializable
+data class VolumeToUpsert(
+    val id: Int?,
+    val volume_id: Int,
+    val times_read: Int,
+    val owned: Boolean
 )

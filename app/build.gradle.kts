@@ -91,9 +91,9 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.0-rc01")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
 
-    implementation(platform("io.github.jan-tennert.supabase:bom:2.5.4"))
-    implementation("io.github.jan-tennert.supabase:gotrue-kt")
+    implementation(platform("io.github.jan-tennert.supabase:bom:2.6.1"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.github.jan-tennert.supabase:gotrue-kt")
     implementation("io.github.jan-tennert.supabase:realtime-kt")
 
     implementation("io.ktor:ktor-client-android:2.3.8")
