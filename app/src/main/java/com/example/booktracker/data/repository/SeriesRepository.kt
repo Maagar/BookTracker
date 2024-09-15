@@ -5,7 +5,8 @@ import com.example.booktracker.data.model.Series
 import com.example.booktracker.data.model.SeriesInfo
 import com.example.booktracker.data.model.UserSeriesIds
 import com.example.booktracker.data.model.Volume
-import com.example.booktracker.data.model.VolumeToUpsert
+import com.example.booktracker.data.model.VolumeToInsert
+import com.example.booktracker.data.model.VolumeToUpdate
 
 interface SeriesRepository {
 
@@ -15,5 +16,8 @@ interface SeriesRepository {
     suspend fun getVolumes(seriesId: Int): List<Volume>
     suspend fun followSeries(seriesId: Int): UserSeriesIds
     suspend fun unfollowSeries(seriesId: Int): Boolean
-    suspend fun upsertUserVolume(volumeToUpsert: VolumeToUpsert): Boolean
+    suspend fun insertUserVolume(volumeToInsert: VolumeToInsert): Boolean
+    suspend fun updateUserVolume(volumeToUpdate: VolumeToUpdate): Boolean
+    suspend fun deleteUserVolume(userVolumeId: Int): Boolean
+
 }

@@ -6,11 +6,13 @@ import com.example.booktracker.data.model.Series
 import com.example.booktracker.data.model.SeriesInfo
 import com.example.booktracker.data.model.UserSeriesIds
 import com.example.booktracker.data.model.Volume
-import com.example.booktracker.data.model.VolumeToUpsert
+import com.example.booktracker.data.model.VolumeToInsert
+import com.example.booktracker.data.model.VolumeToUpdate
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
-import io.github.jan.supabase.postgrest.query.Order
+import io.github.jan.supabase.postgrest.rpc
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -39,28 +41,11 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
 
     suspend fun getFollowedSeries(offset: Int, limit: Int): List<FollowedSeries> =
         withContext(Dispatchers.IO) {
-            val columns = Columns.raw(
-                """
-                    id,
-                    volumes_read_count,
-                    series(
-                        id,
-                        created_at,
-                        title,
-                        main_cover_url,
-                        is_single_volume,
-                        release_date,
-                        synopsis,
-                        total_volumes_released
-                    )
-                """.trimIndent()
-            )
-            val response =
-                supabaseClient.from("user_series").select(columns = columns) {
-                    range(offset.toLong()..<offset + limit)
-                }.decodeList<FollowedSeries>()
-
-            response
+            supabaseClient.postgrest.rpc(
+                "get_followed_series", mapOf(
+                    "p_offset" to offset, "p_limit" to limit
+                )
+            ).decodeList()
         }
 
     suspend fun getSeriesInfo(seriesId: Int): SeriesInfo = withContext(Dispatchers.IO) {
@@ -91,31 +76,12 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
             .select(columns) {
                 filter { eq("id", seriesId) }
             }.decodeSingle<SeriesInfo>()
-        Log.d("test", "Response: $response")
         response
     }
 
 
     suspend fun getAllUserVolumes(seriesId: Int): List<Volume> = withContext(Dispatchers.IO) {
-        val columns = Columns.raw(
-            """
-            id,
-            title,
-            cover_url,
-            volume_number,
-            user_volumes(
-                id,
-                times_read,
-                owned
-            )
-        """.trimIndent()
-        )
-        val response = supabaseClient.from("volumes")
-            .select(columns = columns) {
-                order(column = "volume_number", order = Order.ASCENDING)
-                filter { eq("series_id", seriesId) }
-            }
-            .decodeList<Volume>()
+        val response = supabaseClient.postgrest.rpc("get_user_volumes_by_series", mapOf("p_series_id" to seriesId)).decodeList<Volume>()
         response
     }
 
@@ -137,14 +103,40 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
         }
     }
 
-    suspend fun upsertUserVolume(volumeToUpsert: VolumeToUpsert): Boolean = withContext(Dispatchers.IO) {
-        try {
-            supabaseClient.from("user_volumes").update(volumeToUpsert)
-            true
-        } catch (e: Exception) {
-            e.message?.let { Log.e("UpsertError", it) }
-            false
+    suspend fun insertUserVolume(volumeToInsert: VolumeToInsert): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                supabaseClient.from("user_volumes").insert(volumeToInsert)
+                true
+            } catch (e: Exception) {
+                e.message?.let { Log.e("InsertError", it) }
+                false
+            }
         }
-    }
+
+    suspend fun updateUserVolume(volumeToUpdate: VolumeToUpdate): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                supabaseClient.from("user_volumes").update(volumeToUpdate)
+                true
+            } catch (e: Exception) {
+                e.message?.let { Log.e("InsertError", it) }
+                false
+            }
+        }
+
+    suspend fun deleteUserVolume(userVolumeId: Int): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                supabaseClient.from("user_volumes").delete() {
+                    filter { eq("id", userVolumeId) }
+                }
+
+                true
+            } catch (e: Exception) {
+                e.message?.let { Log.e("InsertError", it) }
+                false
+            }
+        }
 
 }

@@ -22,17 +22,16 @@ fun DialogTabs(state: Int, titles: List<String>, onTabClick: (Int) -> Unit) {
         modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
     ) {
         titles.forEachIndexed { index, title ->
-            // Custom Tab with centered text and no ripple effect
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()  // Ensures the box takes up full available width
+                    .fillMaxWidth()
                     .clickable(
                         onClick = { onTabClick(index) },
-                        indication = null,  // No ripple effect
+                        indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     )
-                    .padding(8.dp),  // Add padding inside the tab
-                contentAlignment = Alignment.Center  // Centers the content inside the Box
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Text(text = title, maxLines = 1)
             }

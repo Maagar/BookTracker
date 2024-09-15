@@ -5,7 +5,8 @@ import com.example.booktracker.data.model.Series
 import com.example.booktracker.data.model.SeriesInfo
 import com.example.booktracker.data.model.UserSeriesIds
 import com.example.booktracker.data.model.Volume
-import com.example.booktracker.data.model.VolumeToUpsert
+import com.example.booktracker.data.model.VolumeToInsert
+import com.example.booktracker.data.model.VolumeToUpdate
 import com.example.booktracker.data.network.SeriesDao
 import com.example.booktracker.data.repository.SeriesRepository
 import javax.inject.Inject
@@ -39,7 +40,15 @@ class SeriesRepositoryImpl @Inject constructor(private val seriesDao: SeriesDao)
         return seriesDao.deleteUserSeries(seriesId)
     }
 
-    override suspend fun upsertUserVolume(volumeToUpsert: VolumeToUpsert): Boolean {
-        return seriesDao.upsertUserVolume(volumeToUpsert)
+    override suspend fun insertUserVolume(volumeToInsert: VolumeToInsert): Boolean {
+        return seriesDao.insertUserVolume(volumeToInsert)
+    }
+
+    override suspend fun updateUserVolume(volumeToUpdate: VolumeToUpdate): Boolean {
+        return seriesDao.updateUserVolume(volumeToUpdate)
+    }
+
+    override suspend fun deleteUserVolume(userVolumeId: Int): Boolean {
+        return seriesDao.deleteUserVolume(userVolumeId)
     }
 }

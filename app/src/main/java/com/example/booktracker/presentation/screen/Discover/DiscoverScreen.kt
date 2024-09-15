@@ -112,7 +112,7 @@ fun DiscoverScreen(
             SeriesDialog(
                 series = it,
                 seriesInfo = seriesInfo,
-                readVolumes = volumeList.count { it.userVolumes.times_read > 0 },
+                readVolumes = volumeList.count { it.times_read > 0 },
                 volumeList = volumeList,
                 onDismiss = {
                     selectedSeries = null
@@ -121,6 +121,20 @@ fun DiscoverScreen(
                 dialogState = dialogState,
                 onTabClick = { newIndex ->
                     seriesViewModel.switchTab(newIndex)
+                },
+                onVolumeInsert = { volumeToInsert ->
+                    seriesViewModel.onUserVolumeInsert(volumeToInsert) { success ->
+                        if (success) {
+
+                        }
+                    }
+                },
+                onVolumeUpdate = { volumeToUpdate ->
+                    seriesViewModel.onUserVolumeUpdate(volumeToUpdate) { success ->
+                        if (success) {
+
+                        }
+                    }
                 })
         }
     }

@@ -32,10 +32,11 @@ fun LibraryScreen(
     var selectedSeries by remember { mutableStateOf<Series?>(null) }
     val seriesInfo by seriesViewModel.seriesInfo.collectAsState()
     val dialogState by seriesViewModel.dialogState.collectAsState()
+    var isDialogClosed by remember { mutableStateOf(true) }
 
 
-    LaunchedEffect(refreshFlag) {
-        if (refreshFlag) {
+    LaunchedEffect(refreshFlag, isDialogClosed) {
+        if (refreshFlag && isDialogClosed) {
             Log.d("LibraryScreen", "Refresh Flag: $refreshFlag")
             libraryViewModel.refreshSeries()
             seriesViewModel.resetRefreshFlag()
@@ -47,33 +48,58 @@ fun LibraryScreen(
         verticalArrangement = Arrangement.Top
     ) {
         LazyVerticalGrid(columns = GridCells.Fixed(3), verticalArrangement = Arrangement.Top) {
-            items(userSeries) { series ->
+            items(userSeries) { followedSeries ->
                 SeriesCard(
-                    series = series.series,
-                    readVolumes = series.volumes_read_count,
+                    series = followedSeries.series,
+                    readVolumes = followedSeries.volumes_read_count,
                     onCardClick = {
-                        selectedSeries = series.series
-                        seriesViewModel.fetchVolumes(series.id)
-                        seriesViewModel.fetchSeriesInfo(series.id)
+                        selectedSeries = followedSeries.series
+                        seriesViewModel.fetchVolumes(followedSeries.series.id)
+                        seriesViewModel.fetchSeriesInfo(followedSeries.series.id)
                     })
             }
         }
 
     }
 
-    selectedSeries?.let {
+    selectedSeries?.let { series ->
+        isDialogClosed = false
         SeriesDialog(
-            series = it,
+            series = series,
             seriesInfo = seriesInfo,
-            readVolumes = volumeList.count { it.userVolumes.times_read > 0 },
+            readVolumes = volumeList.count { it.times_read > 0 },
             volumeList = volumeList,
             onDismiss = {
                 selectedSeries = null
                 seriesViewModel.clearVolumeList()
+                isDialogClosed = true
             },
             dialogState = dialogState,
             onTabClick = { newIndex ->
                 seriesViewModel.switchTab(newIndex)
-            })
+            },
+            onVolumeInsert = { volumeToInsert ->
+                seriesViewModel.onUserVolumeInsert(volumeToInsert) { success ->
+                    if (success) {
+                        seriesViewModel.refreshVolume(
+                            volumeToInsert.volume_id,
+                            volumeToInsert.times_read,
+                            volumeToInsert.owned
+                        )
+                    }
+                }
+            },
+            onVolumeUpdate = { volumeToUpdate ->
+                seriesViewModel.onUserVolumeUpdate(volumeToUpdate) { success ->
+                    if (success) {
+                        seriesViewModel.refreshVolume(
+                            volumeToUpdate.volume_id,
+                            volumeToUpdate.times_read,
+                            volumeToUpdate.owned
+                        )
+                    }
+                }
+            }
+        )
     }
 }

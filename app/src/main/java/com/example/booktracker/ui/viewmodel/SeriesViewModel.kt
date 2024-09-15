@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.booktracker.data.model.SeriesInfo
 import com.example.booktracker.data.model.Volume
-import com.example.booktracker.data.model.VolumeToUpsert
+import com.example.booktracker.data.model.VolumeToInsert
+import com.example.booktracker.data.model.VolumeToUpdate
 import com.example.booktracker.data.repository.SeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -85,16 +86,49 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
         Log.d("resetRefreshFlag", "Refresh Flag: ${_seriesRefreshFlag.value}")
     }
 
-    fun onVolumeStatusChange(upsert: VolumeToUpsert, onSuccess: (Boolean) -> Unit) {
+    fun onUserVolumeInsert(volumeToInsert: VolumeToInsert, onSuccess: (Boolean) -> Unit) {
         viewModelScope.launch {
             try {
-                seriesRepository.upsertUserVolume(upsert)
+                seriesRepository.insertUserVolume(volumeToInsert)
                 onSuccess(true)
                 _seriesRefreshFlag.value = true
             } catch (e: Exception) {
                 onSuccess(false)
             }
         }
+    }
+
+    fun onUserVolumeUpdate(volumeToUpdate: VolumeToUpdate, onSuccess: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            try {
+                seriesRepository.updateUserVolume(volumeToUpdate)
+                onSuccess(true)
+                _seriesRefreshFlag.value = true
+            } catch (e: Exception) {
+                onSuccess(false)
+            }
+        }
+    }
+
+    fun onUserVolumeDelete(volumeId: Int, onSuccess: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            try {
+                seriesRepository.deleteUserVolume(volumeId)
+                onSuccess(true)
+                _seriesRefreshFlag.value = true
+            } catch (e: Exception) {
+                onSuccess(false)
+            }
+        }
+    }
+
+    fun refreshVolume(volumeId: Int, timesRead: Int, owned: Boolean) {
+        val updatedVolumesList = _volumes.value.mapIndexed{index, volume ->
+            if (volume.id == volumeId)
+                volume.copy(times_read = timesRead, owned = owned)
+            else volume
+        }
+        _volumes.value = updatedVolumesList
     }
 
 }

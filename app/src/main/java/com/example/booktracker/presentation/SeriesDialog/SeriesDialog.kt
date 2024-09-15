@@ -20,6 +20,8 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.booktracker.data.model.Series
 import com.example.booktracker.data.model.SeriesInfo
 import com.example.booktracker.data.model.Volume
+import com.example.booktracker.data.model.VolumeToInsert
+import com.example.booktracker.data.model.VolumeToUpdate
 import com.example.booktracker.presentation.SeriesDialog.component.AboutSeries
 import com.example.booktracker.presentation.SeriesDialog.component.DialogTabs
 import com.example.booktracker.presentation.SeriesDialog.component.SeriesHeader
@@ -35,7 +37,9 @@ fun SeriesDialog(
     volumeList: List<Volume>,
     onDismiss: (() -> Unit),
     dialogState: Int,
-    onTabClick: (Int) -> Unit
+    onTabClick: (Int) -> Unit,
+    onVolumeInsert: (VolumeToInsert) -> Unit,
+    onVolumeUpdate: (VolumeToUpdate) -> Unit
 ) {
     Dialog(
         onDismissRequest = onDismiss,
@@ -67,7 +71,14 @@ fun SeriesDialog(
                 if (dialogState == 0) {
                     LazyColumn {
                         items(volumeList) { volume ->
-                            VolumeListItem(volume)
+                            VolumeListItem(volume,
+                                onUserVolumeInsert = { volumeToInsert ->
+                                    onVolumeInsert(volumeToInsert)
+                                },
+                                onUserVolumeUpdate = { volumeToUpdate ->
+                                    onVolumeUpdate(volumeToUpdate)
+                                }
+                                )
                             HorizontalDivider()
                         }
                     }
