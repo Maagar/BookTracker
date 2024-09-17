@@ -13,10 +13,12 @@ data class Series (
     val release_date: LocalDate,
     val synopsis: String,
     var total_volumes_released: Int,
-    var isFollowing: Boolean = false
+    var is_following: Boolean
 )
 
 @Serializable
-class UserSeriesIds(
-    val series_id: Int
+class Params (
+    val p_offset: Int,
+    val p_limit: Int,
+    val p_search_query: String
 )

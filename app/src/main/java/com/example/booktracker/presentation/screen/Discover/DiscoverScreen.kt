@@ -123,18 +123,10 @@ fun DiscoverScreen(
                     seriesViewModel.switchTab(newIndex)
                 },
                 onVolumeInsert = { volumeToInsert ->
-                    seriesViewModel.onUserVolumeInsert(volumeToInsert) { success ->
-                        if (success) {
-
-                        }
-                    }
+                    seriesViewModel.onUserVolumeInsert(volumeToInsert)
                 },
                 onVolumeUpdate = { volumeToUpdate ->
-                    seriesViewModel.onUserVolumeUpdate(volumeToUpdate) { success ->
-                        if (success) {
-
-                        }
-                    }
+                    seriesViewModel.onUserVolumeUpdate(volumeToUpdate)
                 })
         }
     }

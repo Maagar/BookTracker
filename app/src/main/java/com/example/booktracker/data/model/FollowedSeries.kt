@@ -15,7 +15,7 @@ data class FollowedSeries(
     private val release_date: LocalDate,
     private val synopsis: String,
     private var total_volumes_released: Int,
-    private var isFollowing: Boolean = false
+    private var isFollowing: Boolean = true
 ) {
     val series = Series(
         series_id,

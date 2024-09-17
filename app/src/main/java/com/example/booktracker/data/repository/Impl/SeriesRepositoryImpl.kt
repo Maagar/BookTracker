@@ -3,7 +3,6 @@ package com.example.booktracker.data.repository.Impl
 import com.example.booktracker.data.model.FollowedSeries
 import com.example.booktracker.data.model.Series
 import com.example.booktracker.data.model.SeriesInfo
-import com.example.booktracker.data.model.UserSeriesIds
 import com.example.booktracker.data.model.Volume
 import com.example.booktracker.data.model.VolumeToInsert
 import com.example.booktracker.data.model.VolumeToUpdate
@@ -13,7 +12,7 @@ import javax.inject.Inject
 
 class SeriesRepositoryImpl @Inject constructor(private val seriesDao: SeriesDao) :
     SeriesRepository {
-    override suspend fun getSeries(page: Int, pageSize: Int, searchQuery: String?): List<Series> {
+    override suspend fun getSeries(page: Int, pageSize: Int, searchQuery: String): List<Series> {
         val offset = page * pageSize
         return seriesDao.getSeriesPaginated(offset, pageSize, searchQuery)
 
@@ -32,7 +31,7 @@ class SeriesRepositoryImpl @Inject constructor(private val seriesDao: SeriesDao)
         return seriesDao.getAllUserVolumes(seriesId)
     }
 
-    override suspend fun followSeries(seriesId: Int): UserSeriesIds {
+    override suspend fun followSeries(seriesId: Int): Boolean {
         return seriesDao.insertUserSeries(seriesId)
     }
 
@@ -40,7 +39,7 @@ class SeriesRepositoryImpl @Inject constructor(private val seriesDao: SeriesDao)
         return seriesDao.deleteUserSeries(seriesId)
     }
 
-    override suspend fun insertUserVolume(volumeToInsert: VolumeToInsert): Boolean {
+    override suspend fun insertUserVolume(volumeToInsert: VolumeToInsert): Int? {
         return seriesDao.insertUserVolume(volumeToInsert)
     }
 

@@ -87,11 +87,20 @@ class AuthViewModel @Inject constructor(
 
     fun onSignUp() {
         viewModelScope.launch {
-            authenticationRepository.signUp(
-                email = _email.value,
-                password = _password.value,
-                data = buildJsonObject { put("username", _username.value) }
-            )
+            try {
+                val result = authenticationRepository.signUp(
+                    email = _email.value,
+                    password = _password.value,
+                    data = buildJsonObject { put("username", _username.value) }
+                )
+                if (result) {
+                    onSignIn()
+                }
+
+            } catch (e:Exception) {
+
+            }
+
         }
     }
 

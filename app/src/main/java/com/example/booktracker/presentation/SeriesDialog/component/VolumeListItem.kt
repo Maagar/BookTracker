@@ -48,9 +48,13 @@ fun VolumeListItem(
                     if (volume.owned) {
                         MaterialTheme.colorScheme.tertiary
                     } else {
-                        MaterialTheme.colorScheme.background
+                        MaterialTheme.colorScheme.surfaceVariant
                     },
-                    MaterialTheme.colorScheme.onTertiary
+                    if (volume.owned) {
+                        MaterialTheme.colorScheme.onTertiary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    }
                 ) {
                     if (!volume.owned && volume.times_read == 0) {
                         onUserVolumeInsert(
@@ -66,22 +70,30 @@ fun VolumeListItem(
                             )
                         )
                     } else {
-
                     }
                 }
                 ListItemIcon(
                     R.drawable.check,
-                    MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.onPrimary
+                    if (volume.times_read > 0) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant
+                    },
+                    if (volume.times_read > 0) {
+                        MaterialTheme.colorScheme.onPrimary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    }
                 ) {
                     if (!volume.owned && volume.times_read == 0) {
                         onUserVolumeInsert(
                             VolumeToInsert(volume.id, 1, false)
                         )
-                    } else if (volume.owned && volume.times_read == 0) {
-
+                    } else if (volume.owned && volume.times_read == 0 && volume.user_volume_id != null) {
+                        onUserVolumeUpdate(
+                            VolumeToUpdate(volume.user_volume_id, volume.id, 1, volume.owned)
+                        )
                     } else {
-
                     }
                 }
             }

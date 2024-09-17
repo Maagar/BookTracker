@@ -12,6 +12,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.booktracker.R
 import com.example.booktracker.ui.viewmodel.AuthViewModel
 import com.example.booktracker.presentation.component.AuthInputField
@@ -35,7 +37,7 @@ import com.example.booktracker.utils.validateUsername
 import com.example.ui.theme.AppTypography
 
 @Composable
-fun SignUpScreen(viewModel: AuthViewModel = hiltViewModel(), toSignInScreen: (() -> Unit)) {
+fun SignUpScreen(viewModel: AuthViewModel = hiltViewModel(), toSignInScreen: (() -> Unit), toHomeScreen: ()-> Unit) {
     val email = viewModel.email.collectAsState(initial = "")
     val emailError = remember { mutableStateOf<String?>(null) }
     val username = viewModel.username.collectAsState(initial = "")
@@ -43,6 +45,16 @@ fun SignUpScreen(viewModel: AuthViewModel = hiltViewModel(), toSignInScreen: (()
     val password = viewModel.password.collectAsState(initial = "")
     val passwordError = remember { mutableStateOf<String?>(null) }
     var passwordVisible by remember { mutableStateOf(false) }
+
+    val signInResult by viewModel.signInResult.collectAsStateWithLifecycle(initialValue = null)
+
+    LaunchedEffect(signInResult) {
+        signInResult?.let { success ->
+            if (success){
+                toHomeScreen()
+            }
+        }
+    }
 
     Column(
         modifier = Modifier.padding(24.dp),

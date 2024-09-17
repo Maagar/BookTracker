@@ -11,6 +11,7 @@ data class Volume(
     val user_volume_id: Int? = null,
     var times_read: Int = 0,
     val owned: Boolean = false
+
 )
 
 @Serializable

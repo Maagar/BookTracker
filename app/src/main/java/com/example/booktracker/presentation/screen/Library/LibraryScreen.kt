@@ -79,26 +79,10 @@ fun LibraryScreen(
                 seriesViewModel.switchTab(newIndex)
             },
             onVolumeInsert = { volumeToInsert ->
-                seriesViewModel.onUserVolumeInsert(volumeToInsert) { success ->
-                    if (success) {
-                        seriesViewModel.refreshVolume(
-                            volumeToInsert.volume_id,
-                            volumeToInsert.times_read,
-                            volumeToInsert.owned
-                        )
-                    }
-                }
+                seriesViewModel.onUserVolumeInsert(volumeToInsert)
             },
             onVolumeUpdate = { volumeToUpdate ->
-                seriesViewModel.onUserVolumeUpdate(volumeToUpdate) { success ->
-                    if (success) {
-                        seriesViewModel.refreshVolume(
-                            volumeToUpdate.volume_id,
-                            volumeToUpdate.times_read,
-                            volumeToUpdate.owned
-                        )
-                    }
-                }
+                seriesViewModel.onUserVolumeUpdate(volumeToUpdate)
             }
         )
     }

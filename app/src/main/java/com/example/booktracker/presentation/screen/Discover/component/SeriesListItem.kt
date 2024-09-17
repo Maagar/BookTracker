@@ -42,7 +42,7 @@ fun SeriesListItem(
         trailingContent = {
             IconButton(
                 onClick = {
-                    if (series.isFollowing) {
+                    if (series.is_following) {
                         onUnfollowSeries()
                     } else {
                         onFollowSeries()
@@ -51,7 +51,7 @@ fun SeriesListItem(
                     .size(72.dp)
                     .padding(8.dp)
             ) {
-                if (series.isFollowing) Icon(
+                if (series.is_following) Icon(
                     painterResource(R.drawable.check_box),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary

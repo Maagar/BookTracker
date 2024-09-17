@@ -59,8 +59,7 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
         viewModelScope.launch {
             try {
                 val result = seriesRepository.followSeries(seriesId)
-                onSuccess(true)
-                Log.d("onFollowSeries", "Refresh Flag: $_seriesRefreshFlag")
+                onSuccess(result)
 
                 _seriesRefreshFlag.value = true
             } catch (e: Exception) {
@@ -73,7 +72,7 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
         viewModelScope.launch {
             try {
                 val result = seriesRepository.unfollowSeries(seriesId)
-                onSuccess(true)
+                onSuccess(result)
                 _seriesRefreshFlag.value = true
             } catch (e: Exception) {
                 onSuccess(false)
@@ -86,26 +85,36 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
         Log.d("resetRefreshFlag", "Refresh Flag: ${_seriesRefreshFlag.value}")
     }
 
-    fun onUserVolumeInsert(volumeToInsert: VolumeToInsert, onSuccess: (Boolean) -> Unit) {
+    fun onUserVolumeInsert(volumeToInsert: VolumeToInsert) {
         viewModelScope.launch {
             try {
-                seriesRepository.insertUserVolume(volumeToInsert)
-                onSuccess(true)
+                val result = seriesRepository.insertUserVolume(volumeToInsert)
+                refreshVolume(
+                    result,
+                    volumeToInsert.volume_id,
+                    volumeToInsert.times_read,
+                    volumeToInsert.owned,
+                )
                 _seriesRefreshFlag.value = true
             } catch (e: Exception) {
-                onSuccess(false)
+                Log.e("error", "error inserting the volume")
             }
         }
     }
 
-    fun onUserVolumeUpdate(volumeToUpdate: VolumeToUpdate, onSuccess: (Boolean) -> Unit) {
+    fun onUserVolumeUpdate(volumeToUpdate: VolumeToUpdate) {
         viewModelScope.launch {
             try {
-                seriesRepository.updateUserVolume(volumeToUpdate)
-                onSuccess(true)
-                _seriesRefreshFlag.value = true
+                val result = seriesRepository.updateUserVolume(volumeToUpdate)
+                refreshVolume(
+                    volumeToUpdate.id,
+                    volumeToUpdate.volume_id,
+                    volumeToUpdate.times_read,
+                    volumeToUpdate.owned,
+                )
+                _seriesRefreshFlag.value = result
             } catch (e: Exception) {
-                onSuccess(false)
+                Log.e("error", "error updating the volume")
             }
         }
     }
@@ -113,8 +122,8 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
     fun onUserVolumeDelete(volumeId: Int, onSuccess: (Boolean) -> Unit) {
         viewModelScope.launch {
             try {
-                seriesRepository.deleteUserVolume(volumeId)
-                onSuccess(true)
+                val result = seriesRepository.deleteUserVolume(volumeId)
+                onSuccess(result)
                 _seriesRefreshFlag.value = true
             } catch (e: Exception) {
                 onSuccess(false)
@@ -122,10 +131,12 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
         }
     }
 
-    fun refreshVolume(volumeId: Int, timesRead: Int, owned: Boolean) {
+    fun refreshVolume(userVolumeId: Int?, volumeId: Int, timesRead: Int, owned: Boolean) {
         val updatedVolumesList = _volumes.value.mapIndexed{index, volume ->
-            if (volume.id == volumeId)
-                volume.copy(times_read = timesRead, owned = owned)
+            if (volume.id == volumeId){
+                volume.copy(times_read = timesRead, owned = owned, user_volume_id = userVolumeId)
+            }
+
             else volume
         }
         _volumes.value = updatedVolumesList

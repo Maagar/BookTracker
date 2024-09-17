@@ -68,12 +68,11 @@ fun SetupNavGraph(
 
     Scaffold(
         bottomBar = {
-            if(showScaffold) {
+            if (showScaffold) {
                 BottomNavigationBar(navController = navController, currentScreen)
             }
         }
-    ) {
-        innerPadding ->
+    ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = startDestination,
@@ -101,7 +100,14 @@ fun SetupNavGraph(
                     ) {
                         popUpTo(Screen.SignUp) { inclusive = true }
                     }
-                })
+                },
+                    toHomeScreen = {
+                        navController.navigate(
+                            Screen.Library
+                        ) {
+                            popUpTo(Screen.SignUp) { inclusive = true }
+                        }
+                    })
             }
             composable<Screen.Library> {
                 LibraryScreen(seriesViewModel)
@@ -114,6 +120,6 @@ fun SetupNavGraph(
             }
         }
     }
-    
+
 
 }

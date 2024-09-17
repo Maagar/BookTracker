@@ -63,7 +63,7 @@ class DiscoverViewModel @Inject constructor(private val seriesRepository: Series
                 }
                 currentPage++
             } catch (e: Exception) {
-                Log.e("SeriesViewModel", "Error fetching series", e)
+                Log.e("DiscoverViewModel", "Error fetching series", e)
             } finally {
                 isLoading = false
             }
@@ -90,7 +90,7 @@ class DiscoverViewModel @Inject constructor(private val seriesRepository: Series
     fun refreshSeries(seriesId: Int) {
         val updatedSeriesList = _series.value.mapIndexed{index, series ->
             if (series.id == seriesId)
-                series.copy(isFollowing = !series.isFollowing)
+                series.copy(is_following = !series.is_following)
             else series
         }
         _series.value = updatedSeriesList
