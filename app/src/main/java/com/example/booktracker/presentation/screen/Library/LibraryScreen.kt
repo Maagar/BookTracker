@@ -37,7 +37,6 @@ fun LibraryScreen(
 
     LaunchedEffect(refreshFlag, isDialogClosed) {
         if (refreshFlag && isDialogClosed) {
-            Log.d("LibraryScreen", "Refresh Flag: $refreshFlag")
             libraryViewModel.refreshSeries()
             seriesViewModel.resetRefreshFlag()
         }
@@ -52,6 +51,7 @@ fun LibraryScreen(
                 SeriesCard(
                     series = followedSeries.series,
                     readVolumes = followedSeries.volumes_read_count,
+                    ownedVolumes = followedSeries.volumes_owned_count,
                     onCardClick = {
                         selectedSeries = followedSeries.series
                         seriesViewModel.fetchVolumes(followedSeries.series.id)

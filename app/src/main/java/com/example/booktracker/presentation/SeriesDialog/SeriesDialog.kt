@@ -26,6 +26,7 @@ import com.example.booktracker.presentation.SeriesDialog.component.AboutSeries
 import com.example.booktracker.presentation.SeriesDialog.component.DialogTabs
 import com.example.booktracker.presentation.SeriesDialog.component.SeriesHeader
 import com.example.booktracker.presentation.SeriesDialog.component.VolumeListItem
+import com.example.booktracker.presentation.component.SeriesProgressIndicator
 
 @Composable
 fun SeriesDialog(
@@ -57,13 +58,11 @@ fun SeriesDialog(
             ) {
                 SeriesHeader(series, seriesInfo)
 
-                val progress = if (totalVolumes > 0) {
-                    readVolumes.toFloat() / totalVolumes.toFloat()
-                } else 0f
-                LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth(),
-                    progress = { progress }
-                )
+                val readingProgress =
+                    if (totalVolumes > 0) readVolumes.toFloat() / totalVolumes.toFloat() else 0f
+                val ownedProgress = if (totalVolumes > 0) volumeList.count { it.owned }
+                    .toFloat() / totalVolumes.toFloat() else 0f
+                SeriesProgressIndicator(ownedProgress, readingProgress, 4.dp)
                 DialogTabs(
                     state = dialogState,
                     titles = listOf("VOLUMES", "ABOUT"),
@@ -78,7 +77,7 @@ fun SeriesDialog(
                                 onUserVolumeUpdate = { volumeToUpdate ->
                                     onVolumeUpdate(volumeToUpdate)
                                 }
-                                )
+                            )
                             HorizontalDivider()
                         }
                     }

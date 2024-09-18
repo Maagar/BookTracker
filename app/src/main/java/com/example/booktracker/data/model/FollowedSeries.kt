@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 data class FollowedSeries(
     val id: Int,
     val volumes_read_count: Int,
+    val volumes_owned_count: Int,
     private val series_id: Int,
     private val created_at: String,
     private val title: String,

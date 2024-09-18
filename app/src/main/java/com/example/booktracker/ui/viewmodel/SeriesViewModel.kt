@@ -82,7 +82,6 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
 
     fun resetRefreshFlag() {
         _seriesRefreshFlag.value = false
-        Log.d("resetRefreshFlag", "Refresh Flag: ${_seriesRefreshFlag.value}")
     }
 
     fun onUserVolumeInsert(volumeToInsert: VolumeToInsert) {
