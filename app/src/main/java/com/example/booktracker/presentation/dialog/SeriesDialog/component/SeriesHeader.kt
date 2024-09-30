@@ -1,4 +1,4 @@
-package com.example.booktracker.presentation.SeriesDialog.component
+package com.example.booktracker.presentation.dialog.SeriesDialog.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

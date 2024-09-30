@@ -1,4 +1,4 @@
-package com.example.booktracker.presentation.SeriesDialog
+package com.example.booktracker.presentation.dialog.SeriesDialog
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +12,11 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -22,11 +27,12 @@ import com.example.booktracker.data.model.SeriesInfo
 import com.example.booktracker.data.model.Volume
 import com.example.booktracker.data.model.VolumeToInsert
 import com.example.booktracker.data.model.VolumeToUpdate
-import com.example.booktracker.presentation.SeriesDialog.component.AboutSeries
-import com.example.booktracker.presentation.SeriesDialog.component.DialogTabs
-import com.example.booktracker.presentation.SeriesDialog.component.SeriesHeader
-import com.example.booktracker.presentation.SeriesDialog.component.VolumeListItem
+import com.example.booktracker.presentation.dialog.SeriesDialog.component.AboutSeries
+import com.example.booktracker.presentation.dialog.SeriesDialog.component.DialogTabs
+import com.example.booktracker.presentation.dialog.SeriesDialog.component.SeriesHeader
+import com.example.booktracker.presentation.dialog.SeriesDialog.component.VolumeListItem
 import com.example.booktracker.presentation.component.SeriesProgressIndicator
+import com.example.booktracker.presentation.dialog.VolumeDialog.VolumeDialog
 
 @Composable
 fun SeriesDialog(
@@ -42,6 +48,10 @@ fun SeriesDialog(
     onVolumeInsert: (VolumeToInsert) -> Unit,
     onVolumeUpdate: (VolumeToUpdate) -> Unit
 ) {
+
+    var volumeDialogState by remember { mutableStateOf(false) }
+    var selectedVolume by remember { mutableStateOf<Int?>(null) }
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -71,6 +81,9 @@ fun SeriesDialog(
                     LazyColumn {
                         items(volumeList) { volume ->
                             VolumeListItem(volume,
+                                onItemClick = { volume ->
+                                    selectedVolume = volumeList.indexOf(volume)
+                                },
                                 onUserVolumeInsert = { volumeToInsert ->
                                     onVolumeInsert(volumeToInsert)
                                 },
@@ -88,5 +101,24 @@ fun SeriesDialog(
 
             }
         }
+    }
+
+    selectedVolume?.let { volumeIndex ->
+        volumeDialogState = true
+        VolumeDialog(
+            volumeIndex = volumeIndex,
+            volumeList = volumeList,
+            onDismiss = { selectedVolume = null },
+            dialogState = volumeDialogState,
+            onUserVolumeInsert = { volumeToInsert ->
+                onVolumeInsert(volumeToInsert)
+            },
+            onUserVolumeUpdate = { volumeToUpdate ->
+                onVolumeUpdate(volumeToUpdate)
+            },
+            onVolumeChange = { newIndex ->
+                selectedVolume = newIndex
+            }
+        )
     }
 }

@@ -1,8 +1,10 @@
-package com.example.booktracker.presentation.SeriesDialog.component
+package com.example.booktracker.presentation.dialog.SeriesDialog.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,20 +24,24 @@ fun AboutSeries(series: Series, seriesInfo: SeriesInfo) {
 
     var maxTagLines by remember { mutableStateOf(1) }
 
-    Column {
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Card(modifier = Modifier.padding(8.dp), onClick = {
             if (maxTagLines == 1) maxTagLines = Int.MAX_VALUE
             else maxTagLines = 1
         }) {
             Text(
                 "Tags: ${seriesInfo.tagList.joinToString(", ")}",
-                modifier = Modifier.padding(8.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
                 style = AppTypography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Clip
             )
         }
-        Card(modifier = Modifier.padding(8.dp)) {
+        Card(
+            modifier = Modifier.padding(8.dp)
+        ) {
             Text("Synopsis", style = AppTypography.titleMedium, modifier = Modifier.padding(8.dp))
             Text(
                 series.synopsis,

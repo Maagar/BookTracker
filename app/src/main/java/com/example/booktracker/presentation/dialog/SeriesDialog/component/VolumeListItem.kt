@@ -1,4 +1,4 @@
-package com.example.booktracker.presentation.SeriesDialog.component
+package com.example.booktracker.presentation.dialog.SeriesDialog.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -22,8 +22,6 @@ import com.example.ui.theme.AppTypography
 fun VolumeListItem(
     volume: Volume,
     onItemClick: (Volume) -> Unit = {},
-    onFollowSeries: () -> Unit = {},
-    onUnfollowSeries: () -> Unit = {},
     onUserVolumeInsert: (VolumeToInsert) -> Unit,
     onUserVolumeUpdate: (VolumeToUpdate) -> Unit,
     onUserVolumeDelete: (Int) -> Unit = {}

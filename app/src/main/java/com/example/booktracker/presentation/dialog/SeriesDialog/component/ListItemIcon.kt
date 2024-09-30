@@ -1,4 +1,4 @@
-package com.example.booktracker.presentation.SeriesDialog.component
+package com.example.booktracker.presentation.dialog.SeriesDialog.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

@@ -1,5 +1,6 @@
 package com.example.booktracker.data.model
 
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,9 +10,10 @@ data class Volume(
     val cover_url: String,
     val volume_number: Int,
     val user_volume_id: Int? = null,
+    val release_date: LocalDate?,
     var times_read: Int = 0,
-    val owned: Boolean = false
-
+    val owned: Boolean = false,
+    val synopsis: String
 )
 
 @Serializable

@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.booktracker.data.model.Series
-import com.example.booktracker.presentation.SeriesDialog.SeriesDialog
+import com.example.booktracker.presentation.dialog.SeriesDialog.SeriesDialog
 import com.example.booktracker.presentation.screen.Discover.component.SeriesListItem
 import com.example.booktracker.presentation.screen.Discover.component.SeriesSearchBar
 import com.example.booktracker.ui.viewmodel.SeriesViewModel
