@@ -16,4 +16,6 @@ sealed class Screen(val showScaffold: Boolean = false) {
     data object Profile: Screen(showScaffold = true)
     @Serializable
     data object Loading: Screen()
+    @Serializable
+    data object Series: Screen()
 }

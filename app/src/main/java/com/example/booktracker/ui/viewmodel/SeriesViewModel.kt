@@ -3,6 +3,7 @@ package com.example.booktracker.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.booktracker.data.model.Series
 import com.example.booktracker.data.model.SeriesInfo
 import com.example.booktracker.data.model.Volume
 import com.example.booktracker.data.model.VolumeToInsert
@@ -32,6 +33,17 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
 
     private val _seriesInfo = MutableStateFlow(SeriesInfo())
     val seriesInfo: StateFlow<SeriesInfo> = _seriesInfo
+
+    private val _series = MutableStateFlow<Series?>(null)
+    val series: StateFlow<Series?> = _series
+
+    fun selectSeries(series: Series) {
+        _series.value = series
+    }
+
+    fun clearSelectedSeries() {
+        _series.value = null
+    }
 
     fun switchTab(index: Int) {
         _dialogState.value = index

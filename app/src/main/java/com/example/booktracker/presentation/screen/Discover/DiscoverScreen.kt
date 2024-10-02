@@ -10,15 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.booktracker.data.model.Series
-import com.example.booktracker.presentation.dialog.SeriesDialog.SeriesDialog
 import com.example.booktracker.presentation.screen.Discover.component.SeriesListItem
 import com.example.booktracker.presentation.screen.Discover.component.SeriesSearchBar
 import com.example.booktracker.ui.viewmodel.SeriesViewModel
@@ -26,23 +21,16 @@ import com.example.booktracker.ui.viewmodel.SeriesViewModel
 @Composable
 fun DiscoverScreen(
     seriesViewModel: SeriesViewModel,
-    discoverViewModel: DiscoverViewModel = hiltViewModel()
+    discoverViewModel: DiscoverViewModel = hiltViewModel(),
+    toSeriesScreen: (() -> Unit)
 ) {
 
     val seriesList by discoverViewModel.series.collectAsState()
-    val volumeList by seriesViewModel.volumes.collectAsState()
-
-    var selectedSeries by remember { mutableStateOf<Series?>(null) }
-
     val listState = rememberLazyListState()
 
     val query by discoverViewModel.query.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-
-    val dialogState by seriesViewModel.dialogState.collectAsState()
-
-    val seriesInfo by seriesViewModel.seriesInfo.collectAsState()
 
     LaunchedEffect(Unit) {
         discoverViewModel.fetchSeries()
@@ -74,9 +62,10 @@ fun DiscoverScreen(
         ) {
             items(seriesList) { series ->
                 SeriesListItem(series = series, onItemClick = {
-                    selectedSeries = series
+                    seriesViewModel.selectSeries(series)
                     seriesViewModel.fetchVolumes(series.id)
                     seriesViewModel.fetchSeriesInfo(series.id)
+                    toSeriesScreen()
                 },
                     onFollowSeries = {
                         seriesViewModel.onFollowSeries(series.id) { success ->
@@ -106,28 +95,6 @@ fun DiscoverScreen(
                     discoverViewModel.fetchSeries()
                 }
             }
-        }
-
-        selectedSeries?.let {
-            SeriesDialog(
-                series = it,
-                seriesInfo = seriesInfo,
-                readVolumes = volumeList.count { it.times_read > 0 },
-                volumeList = volumeList,
-                onDismiss = {
-                    selectedSeries = null
-                    seriesViewModel.clearVolumeList()
-                },
-                dialogState = dialogState,
-                onTabClick = { newIndex ->
-                    seriesViewModel.switchTab(newIndex)
-                },
-                onVolumeInsert = { volumeToInsert ->
-                    seriesViewModel.onUserVolumeInsert(volumeToInsert)
-                },
-                onVolumeUpdate = { volumeToUpdate ->
-                    seriesViewModel.onUserVolumeUpdate(volumeToUpdate)
-                })
         }
     }
 }

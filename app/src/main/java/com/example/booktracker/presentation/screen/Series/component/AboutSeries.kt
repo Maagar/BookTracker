@@ -1,4 +1,4 @@
-package com.example.booktracker.presentation.dialog.SeriesDialog.component
+package com.example.booktracker.presentation.screen.Series.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

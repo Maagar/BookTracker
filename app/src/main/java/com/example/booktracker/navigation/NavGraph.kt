@@ -1,5 +1,7 @@
 package com.example.booktracker.navigation
 
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -19,6 +21,7 @@ import com.example.booktracker.presentation.screen.Discover.DiscoverScreen
 import com.example.booktracker.presentation.screen.Library.LibraryScreen
 import com.example.booktracker.presentation.screen.Loading.LoadingScreen
 import com.example.booktracker.presentation.screen.Profile.ProfileScreen
+import com.example.booktracker.presentation.screen.Series.SeriesScreen
 import com.example.booktracker.presentation.screen.SignIn.SignInScreen
 import com.example.booktracker.presentation.screen.SignUp.SignUpScreen
 import com.example.booktracker.ui.viewmodel.SeriesViewModel
@@ -61,6 +64,7 @@ fun SetupNavGraph(
             Screen.Discover::class.qualifiedName -> Screen.Discover
             Screen.Profile::class.qualifiedName -> Screen.Profile
             Screen.Loading::class.qualifiedName -> Screen.Loading
+            Screen.Series::class.qualifiedName -> Screen.Series
             else -> null
         }
     }
@@ -110,13 +114,23 @@ fun SetupNavGraph(
                     })
             }
             composable<Screen.Library> {
-                LibraryScreen(seriesViewModel)
+                LibraryScreen(seriesViewModel, toSeriesScreen = {
+                    navController.navigate(Screen.Series)
+                })
             }
             composable<Screen.Discover> {
-                DiscoverScreen(seriesViewModel)
+                DiscoverScreen(seriesViewModel, toSeriesScreen = {
+                    navController.navigate(Screen.Series)
+                })
             }
             composable<Screen.Profile> {
                 ProfileScreen(toSignInScreen)
+            }
+            composable<Screen.Series>(
+                enterTransition = { slideInVertically(initialOffsetY = { 3000 }) },
+                exitTransition = { slideOutVertically(targetOffsetY = { 3000 }) }
+            ) {
+                SeriesScreen(seriesViewModel)
             }
         }
     }
