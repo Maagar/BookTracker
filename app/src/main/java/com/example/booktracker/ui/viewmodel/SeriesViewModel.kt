@@ -12,6 +12,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,7 +43,7 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
 
     fun fetchSeriesInfo(seriesId: Int) {
         viewModelScope.launch {
-                _seriesInfo.value = seriesRepository.getSeriesInfo(seriesId)
+            _seriesInfo.value = seriesRepository.getSeriesInfo(seriesId)
         }
     }
 
@@ -130,13 +133,16 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
         }
     }
 
-    fun refreshVolume(userVolumeId: Int?, volumeId: Int, timesRead: Int, owned: Boolean) {
-        val updatedVolumesList = _volumes.value.mapIndexed{index, volume ->
-            if (volume.id == volumeId){
-                volume.copy(times_read = timesRead, owned = owned, user_volume_id = userVolumeId)
-            }
-
-            else volume
+    private fun refreshVolume(userVolumeId: Int?, volumeId: Int, timesRead: Int, owned: Boolean) {
+        val updatedVolumesList = _volumes.value.mapIndexed { index, volume ->
+            if (volume.id == volumeId) {
+                volume.copy(
+                    times_read = timesRead,
+                    owned = owned,
+                    user_volume_id = userVolumeId,
+                    read_date = Clock.System.todayIn(TimeZone.currentSystemDefault())
+                )
+            } else volume
         }
         _volumes.value = updatedVolumesList
     }

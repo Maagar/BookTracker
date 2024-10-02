@@ -13,7 +13,8 @@ data class Volume(
     val release_date: LocalDate?,
     var times_read: Int = 0,
     val owned: Boolean = false,
-    val synopsis: String
+    val synopsis: String,
+    val read_date: LocalDate? = null
 )
 
 @Serializable

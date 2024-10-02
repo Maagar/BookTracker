@@ -1,34 +1,32 @@
 package com.example.booktracker.presentation.dialog.VolumeDialog
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
+import com.example.booktracker.R
 import com.example.booktracker.data.model.Volume
 import com.example.booktracker.data.model.VolumeToInsert
 import com.example.booktracker.data.model.VolumeToUpdate
+import com.example.booktracker.presentation.dialog.VolumeDialog.component.VolumeChangeRow
 import com.example.ui.theme.AppTypography
 
 @Composable
@@ -47,8 +45,8 @@ fun VolumeDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         val volume = volumeList[volumeIndex]
-        val nextVolumeIndex = volumeIndex + 1
-        val previousVolumeIndex = volumeIndex - 1
+        val isLast = volumeList.lastIndex == volumeIndex
+        val isFirst = volumeIndex == 0
 
         Surface(
             modifier = modifier
@@ -80,64 +78,25 @@ fun VolumeDialog(
                             .padding(start = 8.dp)
                     ) {
                         Text(text = volume.title, style = AppTypography.titleLarge)
-                        Text(text = "${volume.release_date ?: "Release date not yet announced"}")
+                        Row {
+                            Icon(painterResource(R.drawable.calendar_month), contentDescription = null, modifier = Modifier.padding(end = 12.dp))
+                            Text(text = "${volume.release_date ?: "Release date not yet announced"}")
+                        }
+                        Row {
+                            Icon(painterResource(R.drawable.book), contentDescription = null, modifier = Modifier.padding(end = 12.dp))
+                            Text(text = "${volume.read_date ?: "Not read yet"}")
+                        }
                     }
                 }
 
                 if (volumeList.size > 1)
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp)
-                            .height(IntrinsicSize.Min)
-                    ) {
-                        Column(
-                            modifier
-                                .fillMaxWidth()
-                                .weight(0.5f)
-                                .padding(8.dp)
-                                .clickable {
-                                    if (previousVolumeIndex >= 0) onVolumeChange(
-                                        previousVolumeIndex
-                                    )
-                                },
-                            horizontalAlignment = Alignment.End
-                        ) {
-                            if (volumeIndex > 0) {
-                                Text("Previous volume")
-                                AsyncImage(
-                                    volumeList[previousVolumeIndex].cover_url,
-                                    null,
-                                    modifier = Modifier.size(80.dp)
-                                )
-                            }
-                        }
+                    VolumeChangeRow(
+                        onClickNext = { if (!isLast) onVolumeChange(volumeIndex + 1) },
+                        onClickBack = { if (!isFirst) onVolumeChange(volumeIndex - 1) },
+                        nextVolume = if (!isLast) volumeList[volumeIndex + 1] else null,
+                        previousVolume = if (!isFirst) volumeList[volumeIndex - 1] else null
+                    )
 
-                        VerticalDivider()
-
-                        Column(
-                            modifier
-                                .fillMaxWidth()
-                                .weight(0.5f)
-                                .padding(8.dp)
-                                .clickable {
-                                    if (nextVolumeIndex <= volumeList.lastIndex) onVolumeChange(
-                                        nextVolumeIndex
-                                    )
-                                },
-                            horizontalAlignment = Alignment.Start
-                        ) {
-                            if (volumeIndex < volumeList.lastIndex) {
-                                Text("Next volume")
-                                AsyncImage(
-                                    volumeList[nextVolumeIndex].cover_url,
-                                    null,
-                                    modifier = Modifier.size(80.dp)
-                                )
-                            }
-                        }
-
-                    }
                 Column {
                     Card(modifier = Modifier.padding(8.dp)) {
                         Text(
