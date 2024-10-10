@@ -24,7 +24,9 @@ fun VolumeListItem(
     onItemClick: (Volume) -> Unit = {},
     onUserVolumeInsert: (VolumeToInsert) -> Unit,
     onUserVolumeUpdate: (VolumeToUpdate) -> Unit,
-    onUserVolumeDelete: (Int) -> Unit = {}
+    onUserVolumeDelete: (Int) -> Unit = {},
+    onOwnedVolumeClick: () -> Unit,
+    onReadClick: () -> Unit
 ) {
 
     ListItem(
@@ -68,6 +70,7 @@ fun VolumeListItem(
                             )
                         )
                     } else {
+                        onOwnedVolumeClick()
                     }
                 }
                 ListItemIcon(
@@ -92,6 +95,7 @@ fun VolumeListItem(
                             VolumeToUpdate(volume.user_volume_id, volume.id, 1, volume.owned)
                         )
                     } else {
+                        onReadClick()
                     }
                 }
             }

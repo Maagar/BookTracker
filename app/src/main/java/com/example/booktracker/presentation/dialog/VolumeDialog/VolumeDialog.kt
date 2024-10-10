@@ -26,7 +26,7 @@ import com.example.booktracker.R
 import com.example.booktracker.data.model.Volume
 import com.example.booktracker.data.model.VolumeToInsert
 import com.example.booktracker.data.model.VolumeToUpdate
-import com.example.booktracker.presentation.dialog.VolumeDialog.component.VolumeChangeRow
+import com.example.booktracker.presentation.screen.Volume.component.VolumeChangeRow
 import com.example.ui.theme.AppTypography
 
 @Composable

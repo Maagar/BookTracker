@@ -1,4 +1,4 @@
-package com.example.booktracker.presentation.dialog.VolumeDialog.component
+package com.example.booktracker.presentation.screen.Volume.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

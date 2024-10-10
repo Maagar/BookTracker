@@ -24,6 +24,7 @@ import com.example.booktracker.presentation.screen.Profile.ProfileScreen
 import com.example.booktracker.presentation.screen.Series.SeriesScreen
 import com.example.booktracker.presentation.screen.SignIn.SignInScreen
 import com.example.booktracker.presentation.screen.SignUp.SignUpScreen
+import com.example.booktracker.presentation.screen.Volume.VolumeScreen
 import com.example.booktracker.ui.viewmodel.SeriesViewModel
 
 @Composable
@@ -115,12 +116,12 @@ fun SetupNavGraph(
             }
             composable<Screen.Library> {
                 LibraryScreen(seriesViewModel, toSeriesScreen = {
-                    navController.navigate(Screen.Series)
+                    navController.navigate(Screen.Series) { launchSingleTop = true }
                 })
             }
             composable<Screen.Discover> {
                 DiscoverScreen(seriesViewModel, toSeriesScreen = {
-                    navController.navigate(Screen.Series)
+                    navController.navigate(Screen.Series) { launchSingleTop = true }
                 })
             }
             composable<Screen.Profile> {
@@ -128,9 +129,17 @@ fun SetupNavGraph(
             }
             composable<Screen.Series>(
                 enterTransition = { slideInVertically(initialOffsetY = { 3000 }) },
+                exitTransition = { slideOutVertically(targetOffsetY = { 3000 }) },
+            ) {
+                SeriesScreen(seriesViewModel, toVolumeScreen = {
+                    navController.navigate(Screen.Volume) { launchSingleTop = true }
+                })
+            }
+            composable<Screen.Volume>(
+                enterTransition = { slideInVertically(initialOffsetY = { 3000 }) },
                 exitTransition = { slideOutVertically(targetOffsetY = { 3000 }) }
             ) {
-                SeriesScreen(seriesViewModel)
+                VolumeScreen(seriesViewModel)
             }
         }
     }

@@ -37,6 +37,17 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
     private val _series = MutableStateFlow<Series?>(null)
     val series: StateFlow<Series?> = _series
 
+    private val _volume = MutableStateFlow<Volume?>(null)
+    val volume: StateFlow<Volume?> = _volume
+
+    fun selectVolume(index: Int) {
+        _volume.value = _volumes.value[index]
+    }
+
+    fun clearSelectedVolume() {
+        _volume.value = null
+    }
+
     fun selectSeries(series: Series) {
         _series.value = series
     }
@@ -117,6 +128,7 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
     }
 
     fun onUserVolumeUpdate(volumeToUpdate: VolumeToUpdate) {
+        Log.d ("UpdatePayload", volumeToUpdate.toString ())
         viewModelScope.launch {
             try {
                 val result = seriesRepository.updateUserVolume(volumeToUpdate)
@@ -133,14 +145,20 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
         }
     }
 
-    fun onUserVolumeDelete(volumeId: Int, onSuccess: (Boolean) -> Unit) {
+    fun onUserVolumeDelete(userVolumeId: Int, volumeId: Int) {
         viewModelScope.launch {
             try {
-                val result = seriesRepository.deleteUserVolume(volumeId)
-                onSuccess(result)
-                _seriesRefreshFlag.value = true
+                val result = seriesRepository.deleteUserVolume(userVolumeId)
+                refreshVolume(
+                    userVolumeId,
+                    volumeId,
+                    0,
+                    false,
+                )
+                    _seriesRefreshFlag.value = result
+
             } catch (e: Exception) {
-                onSuccess(false)
+                Log.e("error", "error deleting the volume")
             }
         }
     }
@@ -151,12 +169,13 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
                 volume.copy(
                     times_read = timesRead,
                     owned = owned,
-                    user_volume_id = userVolumeId,
+                    user_volume_id = if(owned || timesRead > 0) userVolumeId else null,
                     read_date = Clock.System.todayIn(TimeZone.currentSystemDefault())
                 )
             } else volume
         }
         _volumes.value = updatedVolumesList
+        Log.d("test", "user_id $userVolumeId, id $volumeId, times $timesRead, owned $owned")
     }
 
 }

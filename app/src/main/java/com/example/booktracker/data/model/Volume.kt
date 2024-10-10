@@ -26,8 +26,8 @@ data class VolumeToInsert(
 
 @Serializable
 data class VolumeToUpdate(
-    val id: Int,
+    val id: Int, // user_volume_id
     val volume_id: Int,
     val times_read: Int,
-    val owned: Boolean
+    val owned: Boolean,
 )

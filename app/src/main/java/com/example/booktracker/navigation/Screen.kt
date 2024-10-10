@@ -18,4 +18,6 @@ sealed class Screen(val showScaffold: Boolean = false) {
     data object Loading: Screen()
     @Serializable
     data object Series: Screen()
+    @Serializable
+    data object Volume: Screen()
 }
