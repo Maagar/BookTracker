@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">BookTracker</string>
+    <string name="enter_password">Podaj hasło</string>
+    <string name="forgot_password">Nie pamiętasz hasła?</string>
+    <string name="sign_in_to_booktracker">Zaloguj się, aby korzystać z
+        BookTracker</string>
+    <string name="sign_in">Zaloguj się</string>
+    <string name="email">Email</string>
+    <string name="enter_email">Podaj email</string>
+    <string name="password">Hasło</string>
+    <string name="password_is_visible">Hasło jest widoczne</string>
+    <string name="password_is_not_visible">Hasło jest niewidoczne</string>
+    <string name="new_to_booktracker">Nie masz jeszcze konta?</string>
+    <string name="create_an_account">Utwórz konto</string>
+    <string name="sign_up">Rejestracja</string>
+    <string name="username">Nazwa użytkownika</string>
+    <string name="repeat_password">Powtórz hasło</string>
+    <string name="enter_username">Podaj nazwę użytkownika</string>
+    <string name="already_have_an_account">Masz już konto?</string>
+    <string name="library">Biblioteka</string>
+    <string name="discover">Odkryj</string>
+    <string name="profile">Profil</string>
+    <string name="volumes">Liczba tomów: %1$s</string>
+    <string name="author">Autor: %1$s</string>
+    <string name="publisher">Wydawca: %1$s</string>
+    <string name="volumes_tab">TOMY</string>
+    <string name="about_tab">OPIS</string>
+    <string name="previous_volume">Poprzedni tom</string>
+    <string name="next_volume">Następny tom</string>
+    <string name="release_date_not_yet_announced">Data wydania jeszcze nie ogłoszona</string>
+    <string name="not_read_yet">Nieprzeczytane</string>
+    <string name="first_volume_msg">Jesteś na początku serii! Czas rozpocząć przygodę.</string>
+    <string name="last_volume_msg">Gratulacje! Ukończyłeś tę część serii. Jeśli to ostatni tom, dziękujemy za wspólną podróż!</string>
+</resources>

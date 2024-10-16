@@ -62,7 +62,7 @@ fun SignUpScreen(viewModel: AuthViewModel = hiltViewModel(), toSignInScreen: (()
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(
-            text = stringResource(R.string.sign_up),
+            text = stringResource(R.string.create_an_account),
             style = AppTypography.displaySmall
         )
 
@@ -122,7 +122,7 @@ fun SignUpScreen(viewModel: AuthViewModel = hiltViewModel(), toSignInScreen: (()
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text(
-                text = "Sign in",
+                text = stringResource(R.string.sign_in),
                 style = AppTypography.labelMedium,
                 color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.clickable(

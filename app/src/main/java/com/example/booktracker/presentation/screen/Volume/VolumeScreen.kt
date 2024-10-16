@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.booktracker.R
@@ -56,7 +57,7 @@ fun VolumeScreen(
                     null,
                     modifier = Modifier
                         .weight(0.4f)
-                        .wrapContentSize()
+                        .size(width = 150.dp, height = 200.dp)
                 )
                 Column(
                     modifier = Modifier
@@ -70,7 +71,7 @@ fun VolumeScreen(
                             contentDescription = null,
                             modifier = Modifier.padding(end = 12.dp)
                         )
-                        Text(text = "${volume?.release_date ?: "Release date not yet announced"}")
+                        Text(text = "${volume?.release_date ?: stringResource(R.string.release_date_not_yet_announced)}")
                     }
                     Row {
                         Icon(
@@ -78,7 +79,7 @@ fun VolumeScreen(
                             contentDescription = null,
                             modifier = Modifier.padding(end = 12.dp)
                         )
-                        Text(text = "${volume?.read_date ?: "Not read yet"}")
+                        Text(text = "${volume?.read_date ?: stringResource(R.string.not_read_yet)}")
                     }
                 }
             }

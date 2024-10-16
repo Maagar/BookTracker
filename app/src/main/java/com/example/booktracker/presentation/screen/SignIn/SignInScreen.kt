@@ -91,7 +91,7 @@ fun SignInScreen(
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(
-            text = "Sign in\nto BookTracker",
+            text = stringResource(R.string.sign_in_to_booktracker),
             style = AppTypography.displaySmall,
             textAlign = TextAlign.Start
         )

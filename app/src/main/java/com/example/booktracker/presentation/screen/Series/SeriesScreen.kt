@@ -21,7 +21,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.booktracker.R
 import com.example.booktracker.data.model.Volume
 import com.example.booktracker.data.model.VolumeToUpdate
 import com.example.booktracker.presentation.screen.Series.component.AboutSeries
@@ -143,7 +145,8 @@ fun SeriesScreen(
             SeriesProgressIndicator(ownedProgress, readingProgress, 4.dp)
             DialogTabs(
                 state = dialogState,
-                titles = listOf("VOLUMES", "ABOUT"),
+                titles = listOf(stringResource(R.string.volumes_tab),
+                    stringResource(R.string.about_tab)),
                 onTabClick = { newIndex ->
                     seriesViewModel.switchTab(newIndex)
                 })

@@ -1,5 +1,8 @@
 package com.example.booktracker.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
@@ -66,6 +69,7 @@ fun SetupNavGraph(
             Screen.Profile::class.qualifiedName -> Screen.Profile
             Screen.Loading::class.qualifiedName -> Screen.Loading
             Screen.Series::class.qualifiedName -> Screen.Series
+            Screen.Volume::class.qualifiedName -> Screen.Volume
             else -> null
         }
     }
@@ -128,16 +132,20 @@ fun SetupNavGraph(
                 ProfileScreen(toSignInScreen)
             }
             composable<Screen.Series>(
-                enterTransition = { slideInVertically(initialOffsetY = { 3000 }) },
-                exitTransition = { slideOutVertically(targetOffsetY = { 3000 }) },
+                enterTransition = { slideInVertically(initialOffsetY = { 3000 }, animationSpec = tween(500)) },
+                exitTransition = { fadeOut() },
+                popExitTransition = { slideOutVertically(targetOffsetY = { 3000 }, animationSpec = tween(500)) },
+                popEnterTransition = { fadeIn() }
             ) {
                 SeriesScreen(seriesViewModel, toVolumeScreen = {
                     navController.navigate(Screen.Volume) { launchSingleTop = true }
                 })
             }
+
             composable<Screen.Volume>(
-                enterTransition = { slideInVertically(initialOffsetY = { 3000 }) },
-                exitTransition = { slideOutVertically(targetOffsetY = { 3000 }) }
+                enterTransition = { slideInVertically(initialOffsetY = { 3000 }, animationSpec = tween(500)) },
+                exitTransition = { slideOutVertically(targetOffsetY = { 3000 }, animationSpec = tween(500)) },
+                popExitTransition = { slideOutVertically(targetOffsetY = { 3000 }, animationSpec = tween(500)) }
             ) {
                 VolumeScreen(seriesViewModel)
             }

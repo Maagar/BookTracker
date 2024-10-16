@@ -16,4 +16,18 @@
     <string name="repeat_password">Repeat password</string>
     <string name="enter_username">Enter username</string>
     <string name="already_have_an_account">Already have an account?</string>
+    <string name="library">Library</string>
+    <string name="discover">Discover</string>
+    <string name="profile">Profile</string>
+    <string name="volumes">Volumes: %1$s</string>
+    <string name="author">Author: %1$s</string>
+    <string name="publisher">Publisher: %1$s</string>
+    <string name="volumes_tab">VOLUMES</string>
+    <string name="about_tab">ABOUT</string>
+    <string name="previous_volume">Previous volume</string>
+    <string name="next_volume">Next volume</string>
+    <string name="release_date_not_yet_announced">Release date not yet announced</string>
+    <string name="not_read_yet">Not read yet</string>
+    <string name="first_volume_msg">You\'re at the beginning of the series! Time to start the adventure.</string>
+    <string name="last_volume_msg">Congratulations! You\'ve finished this part of the series. If this is the last volume, thank you for joining us on this journey!</string>
 </resources>
