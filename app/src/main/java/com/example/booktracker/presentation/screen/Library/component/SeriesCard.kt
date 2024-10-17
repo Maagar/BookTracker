@@ -1,6 +1,8 @@
 package com.example.booktracker.presentation.screen.Library.component
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,6 +14,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.booktracker.data.model.Series
@@ -27,16 +33,19 @@ fun SeriesCard(
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .border(1.dp, Color.Black.copy(alpha = 0.1f), shape = RoundedCornerShape(8.dp)),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(8.dp),
         onClick = onCardClick
     ) {
         Column {
-            var isLoading by remember { mutableStateOf(true) }
             AsyncImage(
                 model = series.main_cover_url,
                 contentDescription = null,
+                modifier = Modifier.fillMaxSize()
+                    .aspectRatio(0.7f),
+                contentScale = ContentScale.Crop
             )
 
             val readingProgress =

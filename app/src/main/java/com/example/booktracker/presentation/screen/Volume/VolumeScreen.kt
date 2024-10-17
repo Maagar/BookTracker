@@ -140,7 +140,7 @@ fun VolumeScreen(
                 Column {
                     Card(modifier = Modifier.padding(8.dp)) {
                         Text(
-                            "Synopsis:\n ${volume?.synopsis}",
+                            text = volume?.synopsis ?: stringResource(R.string.no_synopsis_available),
                             modifier = Modifier
                                 .padding(8.dp)
                                 .fillMaxWidth(),
