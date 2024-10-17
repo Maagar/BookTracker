@@ -1,5 +1,13 @@
 package com.example.booktracker.presentation.screen.Volume
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +36,7 @@ import com.example.booktracker.presentation.screen.Volume.component.VolumeChange
 import com.example.booktracker.ui.viewmodel.SeriesViewModel
 import com.example.ui.theme.AppTypography
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun VolumeScreen(
     seriesViewModel: SeriesViewModel
@@ -40,6 +49,8 @@ fun VolumeScreen(
     val isLast = volumeList.lastIndex == volumeIndex
     val isFirst = volumeIndex == 0
 
+    var animationDirection by remember { mutableIntStateOf(0) }
+
     Surface {
         Column(
             modifier = Modifier
@@ -47,72 +58,97 @@ fun VolumeScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
         ) {
-            Row(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-            ) {
-                AsyncImage(
-                    model = volume?.cover_url,
-                    null,
-                    modifier = Modifier
-                        .weight(0.4f)
-                        .size(width = 150.dp, height = 200.dp)
-                )
-                Column(
-                    modifier = Modifier
-                        .weight(0.6f)
-                        .padding(start = 8.dp)
-                ) {
-                    volume?.let { Text(text = it.title, style = AppTypography.titleLarge) }
-                    Row {
-                        Icon(
-                            painterResource(R.drawable.calendar_month),
+            AnimatedContent(
+                targetState = volumeIndex,
+                transitionSpec = {
+                    slideInHorizontally(
+                        initialOffsetX = { animationDirection * 2000 },
+                        animationSpec = tween(300)
+                    ) with slideOutHorizontally(
+                        targetOffsetX = { animationDirection * -2000 },
+                        animationSpec = tween(300)
+                    )
+                }, label = ""
+            ) { targetIndex ->
+                val currentVolume = volumeList.getOrNull(targetIndex)
+                currentVolume?.let { volume ->
+                    Row(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth()
+                    ) {
+                        AsyncImage(
+                            model = volume.cover_url,
                             contentDescription = null,
-                            modifier = Modifier.padding(end = 12.dp)
+                            modifier = Modifier
+                                .weight(0.4f)
+                                .size(width = 150.dp, height = 200.dp)
                         )
-                        Text(text = "${volume?.release_date ?: stringResource(R.string.release_date_not_yet_announced)}")
-                    }
-                    Row {
-                        Icon(
-                            painterResource(R.drawable.book),
-                            contentDescription = null,
-                            modifier = Modifier.padding(end = 12.dp)
-                        )
-                        Text(text = "${volume?.read_date ?: stringResource(R.string.not_read_yet)}")
+                        Column(
+                            modifier = Modifier
+                                .weight(0.6f)
+                                .padding(start = 8.dp)
+                        ) {
+                            Text(text = volume.title, style = AppTypography.titleLarge)
+                            Row {
+                                Icon(
+                                    painterResource(R.drawable.calendar_month),
+                                    contentDescription = null,
+                                    modifier = Modifier.padding(end = 12.dp)
+                                )
+                                Text(text = "${volume.release_date ?: stringResource(R.string.release_date_not_yet_announced)}")
+                            }
+                            Row {
+                                Icon(
+                                    painterResource(R.drawable.book),
+                                    contentDescription = null,
+                                    modifier = Modifier.padding(end = 12.dp)
+                                )
+                                Text(text = "${volume.read_date ?: stringResource(R.string.not_read_yet)}")
+                            }
+                        }
                     }
                 }
             }
-            if (volumeList.size > 1)
-                VolumeChangeRow(
-                    onClickNext = {
-                        if (!isLast) {
-                            seriesViewModel.selectVolume(volumeIndex + 1)
-                            volumeIndex += 1
-                        }
-                    },
-                    onClickBack = {
-                        if (!isFirst) {
-                            seriesViewModel.selectVolume(volumeIndex - 1)
-                            volumeIndex -= 1
-                        }
-                    },
-                    nextVolume = if (!isLast) volumeList[volumeIndex + 1] else null,
-                    previousVolume = if (!isFirst) volumeList[volumeIndex - 1] else null
-                )
 
-            Column {
-                Card(modifier = Modifier.padding(8.dp)) {
-                    Text(
-                        "Synopsis:\n ${volume?.synopsis}",
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth(),
-                        style = AppTypography.bodyMedium,
+            if (volumeList.size > 1)
+                AnimatedContent(targetState = volumeIndex,
+                    transitionSpec = {
+                        fadeIn(animationSpec = tween(500)) with fadeOut(animationSpec = tween(500))
+                    }, label = ""
+                ) {
+                    VolumeChangeRow(
+                        onClickNext = {
+                            if (!isLast) {
+                                animationDirection = 1
+                                volumeIndex += 1
+                                seriesViewModel.selectVolume(volumeIndex)
+                            }
+                        },
+                        onClickBack = {
+                            if (!isFirst) {
+                                animationDirection = -1
+                                volumeIndex -= 1
+                                seriesViewModel.selectVolume(volumeIndex)
+                            }
+                        },
+                        nextVolume = if (!isLast) volumeList[volumeIndex + 1] else null,
+                        previousVolume = if (!isFirst) volumeList[volumeIndex - 1] else null
                     )
+                }
+            AnimatedContent(targetState = volumeIndex, label = "") {
+                Column {
+                    Card(modifier = Modifier.padding(8.dp)) {
+                        Text(
+                            "Synopsis:\n ${volume?.synopsis}",
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth(),
+                            style = AppTypography.bodyMedium,
+                        )
+                    }
                 }
             }
         }
-
     }
 }

@@ -26,11 +26,14 @@ fun VolumeListItem(
     onUserVolumeUpdate: (VolumeToUpdate) -> Unit,
     onUserVolumeDelete: (Int) -> Unit = {},
     onOwnedVolumeClick: () -> Unit,
-    onReadClick: () -> Unit
+    onReadClick: () -> Unit,
+    isSingleVolume: Boolean
 ) {
 
     ListItem(
-        modifier = Modifier.clickable { onItemClick(volume) },
+        modifier = Modifier.let { modifier ->
+            if (!isSingleVolume) modifier.clickable { onItemClick(volume) } else modifier
+        },
         headlineContent = { Text(text = volume.title, style = AppTypography.titleMedium) },
         leadingContent = {
             AsyncImage(

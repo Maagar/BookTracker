@@ -55,7 +55,7 @@ fun SetupNavGraph(
         navController.navigate(
             Screen.SignIn
         ) {
-
+            popUpTo(0) { inclusive = true }
         }
     }
 

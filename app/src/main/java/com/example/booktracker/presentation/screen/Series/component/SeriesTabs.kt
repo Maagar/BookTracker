@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DialogTabs(state: Int, titles: List<String>, onTabClick: (Int) -> Unit) {
+fun SeriesTabs(state: Int, titles: List<String>, onTabClick: (Int) -> Unit) {
     SecondaryTabRow(
         selectedTabIndex = state,
         modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)

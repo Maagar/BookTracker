@@ -30,4 +30,5 @@
     <string name="not_read_yet">Not read yet</string>
     <string name="first_volume_msg">You\'re at the beginning of the series! Time to start the adventure.</string>
     <string name="last_volume_msg">Congratulations! You\'ve finished this part of the series. If this is the last volume, thank you for joining us on this journey!</string>
+    <string name="sign_out">Sign Out</string>
 </resources>

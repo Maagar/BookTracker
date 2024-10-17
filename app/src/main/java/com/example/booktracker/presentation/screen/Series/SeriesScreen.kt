@@ -27,7 +27,7 @@ import com.example.booktracker.R
 import com.example.booktracker.data.model.Volume
 import com.example.booktracker.data.model.VolumeToUpdate
 import com.example.booktracker.presentation.screen.Series.component.AboutSeries
-import com.example.booktracker.presentation.screen.Series.component.DialogTabs
+import com.example.booktracker.presentation.screen.Series.component.SeriesTabs
 import com.example.booktracker.presentation.screen.Series.component.SeriesHeader
 import com.example.booktracker.presentation.screen.Series.component.VolumeListItem
 import com.example.booktracker.presentation.component.SeriesProgressIndicator
@@ -143,13 +143,15 @@ fun SeriesScreen(
             val ownedProgress = if (totalVolumes > 0) volumes.count { it.owned }
                 .toFloat() / totalVolumes.toFloat() else 0f
             SeriesProgressIndicator(ownedProgress, readingProgress, 4.dp)
-            DialogTabs(
-                state = dialogState,
-                titles = listOf(stringResource(R.string.volumes_tab),
-                    stringResource(R.string.about_tab)),
-                onTabClick = { newIndex ->
-                    seriesViewModel.switchTab(newIndex)
-                })
+
+                SeriesTabs(
+                    state = dialogState,
+                    titles = listOf(stringResource(R.string.volumes_tab),
+                        stringResource(R.string.about_tab)),
+                    onTabClick = { newIndex ->
+                        seriesViewModel.switchTab(newIndex)
+                    })
+
             if (dialogState == 0) {
                 LazyColumn {
                     items(volumes) { volume ->
@@ -171,7 +173,8 @@ fun SeriesScreen(
                             onReadClick = {
                                 showReadBottomSheet = true
                                 bottomSheetVolume = volume
-                            }
+                            },
+                            isSingleVolume = series!!.is_single_volume
                         )
                         HorizontalDivider()
                     }
