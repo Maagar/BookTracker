@@ -28,8 +28,8 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
     private val _seriesRefreshFlag = MutableStateFlow(false)
     val seriesRefreshFlag: StateFlow<Boolean> = _seriesRefreshFlag
 
-    private val _dialogState = MutableStateFlow(0)
-    val dialogState: StateFlow<Int> = _dialogState
+    private val _seriesTabsState = MutableStateFlow(0)
+    val seriesTabsState: StateFlow<Int> = _seriesTabsState
 
     private val _seriesInfo = MutableStateFlow(SeriesInfo())
     val seriesInfo: StateFlow<SeriesInfo> = _seriesInfo
@@ -39,6 +39,15 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
 
     private val _volume = MutableStateFlow<Volume?>(null)
     val volume: StateFlow<Volume?> = _volume
+
+    fun selectVolumeById(volumeId: Int) {
+        val selectedVolume = _volumes.value.find { it.id == volumeId }
+        if (selectedVolume != null) {
+            _volume.value = selectedVolume
+        } else {
+            Log.e("SeriesViewModel", "Volume with ID $volumeId not found in _volumes.")
+        }
+    }
 
     fun selectVolume(index: Int) {
         _volume.value = _volumes.value[index]
@@ -57,7 +66,7 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
     }
 
     fun switchTab(index: Int) {
-        _dialogState.value = index
+        _seriesTabsState.value = index
     }
 
     fun clearVolumeList() {
@@ -68,6 +77,30 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
         viewModelScope.launch {
             _seriesInfo.value = seriesRepository.getSeriesInfo(seriesId)
         }
+    }
+
+    fun fetchSeries(seriesId: Int) {
+        viewModelScope.launch {
+            runCatching {
+                seriesRepository.getSeriesById(seriesId)
+            }.onSuccess { series ->
+                _series.value = series
+            }.onFailure { exception ->
+                Log.e("SeriesViewModel", "Error fetching series", exception)
+            }
+        }
+    }
+
+    fun loadSeriesDetails(series: Series? = null, seriesId: Int) {
+        clearSelectedSeries()
+        clearVolumeList()
+        if(series != null) {
+            selectSeries(series)
+        } else {
+            fetchSeries(seriesId)
+        }
+        fetchVolumes(seriesId)
+        fetchSeriesInfo(seriesId)
     }
 
     fun fetchVolumes(seriesId: Int) {

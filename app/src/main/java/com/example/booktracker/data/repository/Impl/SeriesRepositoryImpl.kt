@@ -3,6 +3,7 @@ package com.example.booktracker.data.repository.Impl
 import com.example.booktracker.data.model.FollowedSeries
 import com.example.booktracker.data.model.Series
 import com.example.booktracker.data.model.SeriesInfo
+import com.example.booktracker.data.model.UpcomingVolume
 import com.example.booktracker.data.model.Volume
 import com.example.booktracker.data.model.VolumeToInsert
 import com.example.booktracker.data.model.VolumeToUpdate
@@ -27,8 +28,16 @@ class SeriesRepositoryImpl @Inject constructor(private val seriesDao: SeriesDao)
         return seriesDao.getSeriesInfo(seriesId)
     }
 
+    override suspend fun getSeriesById(seriesId: Int): Series {
+        return seriesDao.getSeries(seriesId)
+    }
+
     override suspend fun getVolumes(seriesId: Int): List<Volume> {
         return seriesDao.getAllUserVolumes(seriesId)
+    }
+
+    override suspend fun getVolume(volumeId: Int): Volume {
+        return seriesDao.getVolumeById(volumeId)
     }
 
     override suspend fun followSeries(seriesId: Int): Boolean {
@@ -49,5 +58,10 @@ class SeriesRepositoryImpl @Inject constructor(private val seriesDao: SeriesDao)
 
     override suspend fun deleteUserVolume(userVolumeId: Int): Boolean {
         return seriesDao.deleteUserVolume(userVolumeId)
+    }
+
+    override suspend fun getUpcomingVolumes(page: Int, pageSize: Int): List<UpcomingVolume> {
+        val offset = page * pageSize
+        return seriesDao.getUpcomingVolumes(offset, pageSize)
     }
 }

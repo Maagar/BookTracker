@@ -33,4 +33,7 @@
     <string name="last_volume_msg">Gratulacje! Ukończyłeś tę część serii. Jeśli to ostatni tom, dziękujemy za wspólną podróż!</string>
     <string name="sign_out">Wyloguj się</string>
     <string name="no_synopsis_available">Brak streszczenia</string>
+    <string name="upcoming">NADCHODZĄCE</string>
+    <string name="days">dni</string>
+    <string name="volume">Tom</string>
 </resources>

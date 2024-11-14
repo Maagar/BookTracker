@@ -7,7 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -64,7 +64,7 @@ fun VolumeScreen(
                     slideInHorizontally(
                         initialOffsetX = { animationDirection * 2000 },
                         animationSpec = tween(300)
-                    ) with slideOutHorizontally(
+                    ) togetherWith slideOutHorizontally(
                         targetOffsetX = { animationDirection * -2000 },
                         animationSpec = tween(300)
                     )
@@ -82,7 +82,8 @@ fun VolumeScreen(
                             contentDescription = null,
                             modifier = Modifier
                                 .weight(0.4f)
-                                .size(width = 150.dp, height = 200.dp)
+                                .size(width = 150.dp, height = 200.dp),
+                            fallback = painterResource(R.drawable.no_image_placeholder)
                         )
                         Column(
                             modifier = Modifier
@@ -112,35 +113,42 @@ fun VolumeScreen(
             }
 
             if (volumeList.size > 1)
-                AnimatedContent(targetState = volumeIndex,
+                AnimatedContent(
+                    targetState = volumeIndex,
                     transitionSpec = {
-                        fadeIn(animationSpec = tween(500)) with fadeOut(animationSpec = tween(500))
+                        fadeIn(animationSpec = tween(500)) togetherWith fadeOut(animationSpec = tween(500))
                     }, label = ""
-                ) {
+                ) { targetIndex ->
                     VolumeChangeRow(
                         onClickNext = {
                             if (!isLast) {
                                 animationDirection = 1
                                 volumeIndex += 1
-                                seriesViewModel.selectVolume(volumeIndex)
+                                seriesViewModel.selectVolume(targetIndex + 1)
                             }
                         },
                         onClickBack = {
                             if (!isFirst) {
                                 animationDirection = -1
                                 volumeIndex -= 1
-                                seriesViewModel.selectVolume(volumeIndex)
+                                seriesViewModel.selectVolume(targetIndex - 1)
                             }
                         },
                         nextVolume = if (!isLast) volumeList[volumeIndex + 1] else null,
                         previousVolume = if (!isFirst) volumeList[volumeIndex - 1] else null
                     )
                 }
-            AnimatedContent(targetState = volumeIndex, label = "") {
+            AnimatedContent(targetState = volumeIndex, label = "") { targetIndex ->
+                val currentVolume = volumeList.getOrNull(targetIndex)
                 Column {
                     Card(modifier = Modifier.padding(8.dp)) {
                         Text(
-                            text = volume?.synopsis ?: stringResource(R.string.no_synopsis_available),
+                            if (currentVolume?.synopsis.isNullOrEmpty()) {
+                                stringResource(R.string.no_synopsis_available)
+                            } else {
+                                currentVolume?.synopsis
+                                    ?: stringResource(R.string.no_synopsis_available)
+                            },
                             modifier = Modifier
                                 .padding(8.dp)
                                 .fillMaxWidth(),

@@ -3,12 +3,14 @@ package com.example.booktracker.presentation.screen.Series.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -29,7 +31,9 @@ fun SeriesHeader(series: Series, seriesInfo: SeriesInfo) {
             contentDescription = null,
             modifier = Modifier
                 .weight(0.4f)
-                .wrapContentSize()
+                .aspectRatio(0.7f)
+                .fillMaxSize(),
+            contentScale = ContentScale.Fit
         )
 
         Column(

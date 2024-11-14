@@ -5,6 +5,7 @@ import com.example.booktracker.data.model.FollowedSeries
 import com.example.booktracker.data.model.Params
 import com.example.booktracker.data.model.Series
 import com.example.booktracker.data.model.SeriesInfo
+import com.example.booktracker.data.model.UpcomingVolume
 import com.example.booktracker.data.model.Volume
 import com.example.booktracker.data.model.VolumeToInsert
 import com.example.booktracker.data.model.VolumeToUpdate
@@ -27,6 +28,13 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
                 ).decodeList<Series>()
         }
 
+    suspend fun getSeries(seriesId: Int): Series =
+        withContext(Dispatchers.IO) {
+            supabaseClient.postgrest.rpc(
+                "get_series_by_id", mapOf("p_series_id" to seriesId)
+            ).decodeSingle<Series>()
+        }
+
     suspend fun getFollowedSeries(offset: Int, limit: Int): List<FollowedSeries> =
         withContext(Dispatchers.IO) {
             supabaseClient.postgrest.rpc(
@@ -34,6 +42,15 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
                     "p_offset" to offset, "p_limit" to limit
                 )
             ).decodeList<FollowedSeries>()
+        }
+
+    suspend fun getUpcomingVolumes(offset: Int, limit: Int): List<UpcomingVolume> =
+        withContext(Dispatchers.IO) {
+            supabaseClient.postgrest.rpc(
+                "get_upcoming_volumes", mapOf(
+                    "p_offset" to offset, "p_limit" to limit
+                )
+            ).decodeList<UpcomingVolume>()
         }
 
     suspend fun getSeriesInfo(seriesId: Int): SeriesInfo = withContext(Dispatchers.IO) {
@@ -74,6 +91,12 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
             mapOf("p_series_id" to seriesId)
         ).decodeList<Volume>()
         response
+    }
+
+    suspend fun getVolumeById(volumeId: Int): Volume = withContext(Dispatchers.IO) {
+        supabaseClient.postgrest.rpc(
+            "get_volume_by_id", mapOf("p_volume_id" to volumeId)
+        ).decodeSingle<Volume>()
     }
 
     suspend fun insertUserSeries(seriesId: Int): Boolean = withContext(Dispatchers.IO) {

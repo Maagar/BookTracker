@@ -27,7 +27,7 @@ import com.example.booktracker.R
 import com.example.booktracker.data.model.Volume
 import com.example.booktracker.data.model.VolumeToUpdate
 import com.example.booktracker.presentation.screen.Series.component.AboutSeries
-import com.example.booktracker.presentation.screen.Series.component.SeriesTabs
+import com.example.booktracker.presentation.component.TabRow
 import com.example.booktracker.presentation.screen.Series.component.SeriesHeader
 import com.example.booktracker.presentation.screen.Series.component.VolumeListItem
 import com.example.booktracker.presentation.component.SeriesProgressIndicator
@@ -42,7 +42,7 @@ fun SeriesScreen(
     val series by seriesViewModel.series.collectAsState()
     val seriesInfo by seriesViewModel.seriesInfo.collectAsState()
     val volumes by seriesViewModel.volumes.collectAsState()
-    val dialogState by seriesViewModel.dialogState.collectAsState()
+    val seriesTabsState by seriesViewModel.seriesTabsState.collectAsState()
     val totalVolumes = volumes.size
     val readVolumes = volumes.count { it.times_read > 0 }
     var showOwnedBottomSheet by remember { mutableStateOf(false) }
@@ -144,20 +144,20 @@ fun SeriesScreen(
                 .toFloat() / totalVolumes.toFloat() else 0f
             SeriesProgressIndicator(ownedProgress, readingProgress, 4.dp)
 
-                SeriesTabs(
-                    state = dialogState,
+                TabRow(
+                    state = seriesTabsState,
                     titles = listOf(stringResource(R.string.volumes_tab),
                         stringResource(R.string.about_tab)),
                     onTabClick = { newIndex ->
                         seriesViewModel.switchTab(newIndex)
                     })
 
-            if (dialogState == 0) {
+            if (seriesTabsState == 0) {
                 LazyColumn {
                     items(volumes) { volume ->
                         VolumeListItem(volume,
-                            onItemClick = { volume ->
-                                seriesViewModel.selectVolume(volumes.indexOf(volume))
+                            onItemClick = { selectedVolume ->
+                                seriesViewModel.selectVolume(volumes.indexOf(selectedVolume))
                                 toVolumeScreen()
                             },
                             onUserVolumeInsert = { volumeToInsert ->

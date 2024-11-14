@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.booktracker.R
@@ -41,7 +42,8 @@ fun VolumeListItem(
                 contentDescription = null,
                 modifier = Modifier
                     .size(72.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(8.dp)),
+                fallback = painterResource(R.drawable.no_image_placeholder)
             )
         },
         trailingContent = {

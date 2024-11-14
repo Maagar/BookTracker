@@ -1,4 +1,4 @@
-package com.example.booktracker.presentation.screen.Series.component
+package com.example.booktracker.presentation.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SeriesTabs(state: Int, titles: List<String>, onTabClick: (Int) -> Unit) {
+fun TabRow(state: Int, titles: List<String>, onTabClick: (Int) -> Unit) {
     SecondaryTabRow(
         selectedTabIndex = state,
         modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)

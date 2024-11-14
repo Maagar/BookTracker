@@ -32,4 +32,7 @@
     <string name="last_volume_msg">Congratulations! You\'ve finished this part of the series. If this is the last volume, thank you for joining us on this journey!</string>
     <string name="sign_out">Sign Out</string>
     <string name="no_synopsis_available">No synopsis available</string>
+    <string name="upcoming">UPCOMING</string>
+    <string name="days">days</string>
+    <string name="volume">Volume</string>
 </resources>

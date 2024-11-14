@@ -2,6 +2,7 @@ package com.example.booktracker.presentation.screen.Discover
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -11,8 +12,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.booktracker.presentation.screen.Discover.component.SeriesListItem
 import com.example.booktracker.presentation.screen.Discover.component.SeriesSearchBar
@@ -81,7 +84,7 @@ fun DiscoverScreen(
                             }
                         }
                     })
-                HorizontalDivider()
+                HorizontalDivider(modifier = Modifier.padding(8.dp))
             }
         }
 

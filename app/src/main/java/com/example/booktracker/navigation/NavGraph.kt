@@ -121,6 +121,8 @@ fun SetupNavGraph(
             composable<Screen.Library> {
                 LibraryScreen(seriesViewModel, toSeriesScreen = {
                     navController.navigate(Screen.Series) { launchSingleTop = true }
+                }, toVolumeScreen = {
+                    navController.navigate(Screen.Volume) { launchSingleTop = true }
                 })
             }
             composable<Screen.Discover> {
@@ -132,9 +134,19 @@ fun SetupNavGraph(
                 ProfileScreen(toSignInScreen)
             }
             composable<Screen.Series>(
-                enterTransition = { slideInVertically(initialOffsetY = { 3000 }, animationSpec = tween(500)) },
+                enterTransition = {
+                    slideInVertically(
+                        initialOffsetY = { 3000 },
+                        animationSpec = tween(500)
+                    )
+                },
                 exitTransition = { fadeOut() },
-                popExitTransition = { slideOutVertically(targetOffsetY = { 3000 }, animationSpec = tween(500)) },
+                popExitTransition = {
+                    slideOutVertically(
+                        targetOffsetY = { 3000 },
+                        animationSpec = tween(500)
+                    )
+                },
                 popEnterTransition = { fadeIn() }
             ) {
                 SeriesScreen(seriesViewModel, toVolumeScreen = {
@@ -143,9 +155,24 @@ fun SetupNavGraph(
             }
 
             composable<Screen.Volume>(
-                enterTransition = { slideInVertically(initialOffsetY = { 3000 }, animationSpec = tween(500)) },
-                exitTransition = { slideOutVertically(targetOffsetY = { 3000 }, animationSpec = tween(500)) },
-                popExitTransition = { slideOutVertically(targetOffsetY = { 3000 }, animationSpec = tween(500)) }
+                enterTransition = {
+                    slideInVertically(
+                        initialOffsetY = { 3000 },
+                        animationSpec = tween(500)
+                    )
+                },
+                exitTransition = {
+                    slideOutVertically(
+                        targetOffsetY = { 3000 },
+                        animationSpec = tween(500)
+                    )
+                },
+                popExitTransition = {
+                    slideOutVertically(
+                        targetOffsetY = { 3000 },
+                        animationSpec = tween(500)
+                    )
+                }
             ) {
                 VolumeScreen(seriesViewModel)
             }
