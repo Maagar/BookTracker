@@ -10,8 +10,10 @@ import com.example.booktracker.data.model.VolumeToInsert
 import com.example.booktracker.data.model.VolumeToUpdate
 import com.example.booktracker.data.repository.SeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -46,6 +48,20 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
             _volume.value = selectedVolume
         } else {
             Log.e("SeriesViewModel", "Volume with ID $volumeId not found in _volumes.")
+        }
+    }
+
+    fun onVolumeSelected(seriesId: Int, volumeId: Int, onComplete: ()->Unit) {
+        _volumes.value = emptyList()
+        viewModelScope.launch {
+            fetchVolumes(seriesId)
+            _volumes.collect{ volumes ->
+                if (volumes.isNotEmpty()) {
+                    selectVolumeById(volumeId)
+                    onComplete()
+                    cancel()
+                }
+            }
         }
     }
 
@@ -92,16 +108,21 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
     }
 
     fun loadSeriesDetails(series: Series? = null, seriesId: Int) {
-        clearSelectedSeries()
-        clearVolumeList()
-        if(series != null) {
-            selectSeries(series)
-        } else {
-            fetchSeries(seriesId)
+        viewModelScope.launch {
+            runCatching {
+                if (series != null) {
+                    _series.value = series
+                } else {
+                    _series.value = seriesRepository.getSeriesById(seriesId)
+                }
+                _volumes.value = seriesRepository.getVolumes(seriesId)
+                _seriesInfo.value = seriesRepository.getSeriesInfo(seriesId)
+            }.onFailure {
+                Log.e("SeriesViewModel", "Error loading series details for seriesId $seriesId", it)
+            }
         }
-        fetchVolumes(seriesId)
-        fetchSeriesInfo(seriesId)
     }
+
 
     fun fetchVolumes(seriesId: Int) {
         viewModelScope.launch {

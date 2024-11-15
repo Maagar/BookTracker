@@ -1,7 +1,6 @@
 package com.example.booktracker.presentation.screen.Volume
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -36,7 +35,6 @@ import com.example.booktracker.presentation.screen.Volume.component.VolumeChange
 import com.example.booktracker.ui.viewmodel.SeriesViewModel
 import com.example.ui.theme.AppTypography
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun VolumeScreen(
     seriesViewModel: SeriesViewModel

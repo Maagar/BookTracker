@@ -34,9 +34,12 @@ fun Upcoming(
                     toSeriesScreen()
                 },
                 toVolumeScreen = {
-                    seriesViewModel.fetchVolumes(upcomingVolume.series_id)
-                    seriesViewModel.selectVolumeById(upcomingVolume.id)
-                    toVolumeScreen()
+                    seriesViewModel.onVolumeSelected(
+                        seriesId = upcomingVolume.series_id,
+                        volumeId = upcomingVolume.id
+                    ) {
+                        toVolumeScreen()
+                    }
                 })
             HorizontalDivider(modifier = Modifier.padding(4.dp))
         }
