@@ -69,7 +69,7 @@ fun SeriesScreen(
                 }, modifier = Modifier.clickable {
                     bottomSheetVolume?.let { volume ->
                         if (volume.user_volume_id != null) {
-                            if(volume.times_read > 0) {
+                            if (volume.times_read > 0) {
                                 seriesViewModel.onUserVolumeUpdate(
                                     VolumeToUpdate(
                                         volume.user_volume_id,
@@ -132,55 +132,62 @@ fun SeriesScreen(
     }
 
     Surface {
-        Column(
-            modifier = Modifier.padding(8.dp),
-            verticalArrangement = Arrangement.Top,
-        ) {
-            series?.let { SeriesHeader(it, seriesInfo) }
+        if (series == null || volumes == null || seriesInfo == null) {
+            Text("Loading series details...")
+        } else {
+            Column(
+                modifier = Modifier.padding(8.dp),
+                verticalArrangement = Arrangement.Top,
+            ) {
+                series?.let { SeriesHeader(it, seriesInfo) }
 
-            val readingProgress =
-                if (totalVolumes > 0) readVolumes.toFloat() / totalVolumes.toFloat() else 0f
-            val ownedProgress = if (totalVolumes > 0) volumes.count { it.owned }
-                .toFloat() / totalVolumes.toFloat() else 0f
-            SeriesProgressIndicator(ownedProgress, readingProgress, 4.dp)
+                val readingProgress =
+                    if (totalVolumes > 0) readVolumes.toFloat() / totalVolumes.toFloat() else 0f
+                val ownedProgress = if (totalVolumes > 0) volumes.count { it.owned }
+                    .toFloat() / totalVolumes.toFloat() else 0f
+                SeriesProgressIndicator(ownedProgress, readingProgress, 4.dp)
 
                 TabRow(
                     state = seriesTabsState,
-                    titles = listOf(stringResource(R.string.volumes_tab),
-                        stringResource(R.string.about_tab)),
+                    titles = listOf(
+                        stringResource(R.string.volumes_tab),
+                        stringResource(R.string.about_tab)
+                    ),
                     onTabClick = { newIndex ->
                         seriesViewModel.switchTab(newIndex)
                     })
 
-            if (seriesTabsState == 0) {
-                LazyColumn {
-                    items(volumes) { volume ->
-                        VolumeListItem(volume,
-                            onItemClick = { selectedVolume ->
-                                seriesViewModel.selectVolume(volumes.indexOf(selectedVolume))
-                                toVolumeScreen()
-                            },
-                            onUserVolumeInsert = { volumeToInsert ->
-                                seriesViewModel.onUserVolumeInsert(volumeToInsert)
-                            },
-                            onUserVolumeUpdate = { volumeToUpdate ->
-                                seriesViewModel.onUserVolumeUpdate(volumeToUpdate)
-                            },
-                            onOwnedVolumeClick = {
-                                showOwnedBottomSheet = true
-                                bottomSheetVolume = volume
-                            },
-                            onReadClick = {
-                                showReadBottomSheet = true
-                                bottomSheetVolume = volume
-                            },
-                            isSingleVolume = series!!.is_single_volume
-                        )
-                        HorizontalDivider()
+                if (seriesTabsState == 0) {
+                    LazyColumn {
+                        items(volumes) { volume ->
+                            VolumeListItem(
+                                volume,
+                                onItemClick = { selectedVolume ->
+                                    seriesViewModel.selectVolume(volumes.indexOf(selectedVolume))
+                                    toVolumeScreen()
+                                },
+                                onUserVolumeInsert = { volumeToInsert ->
+                                    seriesViewModel.onUserVolumeInsert(volumeToInsert)
+                                },
+                                onUserVolumeUpdate = { volumeToUpdate ->
+                                    seriesViewModel.onUserVolumeUpdate(volumeToUpdate)
+                                },
+                                onOwnedVolumeClick = {
+                                    showOwnedBottomSheet = true
+                                    bottomSheetVolume = volume
+                                },
+                                onReadClick = {
+                                    showReadBottomSheet = true
+                                    bottomSheetVolume = volume
+                                },
+                                isSingleVolume = series!!.is_single_volume
+                            )
+                            HorizontalDivider()
+                        }
                     }
+                } else {
+                    series?.let { AboutSeries(it, seriesInfo) }
                 }
-            } else {
-                series?.let { AboutSeries(it, seriesInfo) }
             }
         }
     }

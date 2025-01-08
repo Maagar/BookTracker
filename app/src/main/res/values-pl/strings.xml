@@ -36,4 +36,11 @@
     <string name="upcoming">NADCHODZĄCE</string>
     <string name="days">dni</string>
     <string name="volume">Tom</string>
+    <string name="reading_progress_owned_books">Postęp Czytania:\nPosiadane Książki</string>
+    <string name="zero_percent_message">Nowa książka, nowe możliwości! Czas zacząć swoją literacką podróż.</string>
+    <string name="low_percent_message">Pierwsze książki za tobą! Mały krok, ale to początek wielkiej podróży.</string>
+    <string name="mid_percent_message">Jesteś w połowie drogi! Tyle książek już przeczytanych, a jeszcze wiele przygód przed tobą.</string>
+    <string name="high_percent_message">Większość książek już przeczytana! Jeszcze kilka i cała kolekcja będzie za tobą.</string>
+    <string name="hundred_percent_message">Twoja biblioteka jest niemal w pełni przeczytana – wielkie brawa za ten postęp!</string>
+    <string name="no_owned_books_message">Gratulacje! Każda książka z twojej kolekcji została przeczytana – czas na nowe wyzwania!</string>
 </resources>

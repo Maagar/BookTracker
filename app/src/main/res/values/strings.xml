@@ -35,4 +35,11 @@
     <string name="upcoming">UPCOMING</string>
     <string name="days">days</string>
     <string name="volume">Volume</string>
+    <string name="reading_progress_owned_books">Reading Progress:\nOwned Books</string>
+    <string name="zero_percent_message">Your bookshelf is full of possibilities—dive into your first read!</string>
+    <string name="low_percent_message">You\'ve made a great start-keep turning those pages!</string>
+    <string name="mid_percent_message">Halfway there! So many adventures already explored, and more await!</string>
+    <string name="high_percent_message">Almost done! Just a few more books to conquer your collection.</string>
+    <string name="hundred_percent_message">Every book, every page—your library is fully explored. Time to add more books!</string>
+    <string name="no_owned_books_message">No books yet? The perfect time to pick your first read!</string>
 </resources>

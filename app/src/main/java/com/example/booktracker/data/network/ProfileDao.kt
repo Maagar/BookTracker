@@ -1,11 +1,13 @@
 package com.example.booktracker.data.network
 
-import android.util.Log
 import com.example.booktracker.data.model.ProfileData
+import com.example.booktracker.data.model.Statistics
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.rpc
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,7 +24,13 @@ class ProfileDao @Inject constructor(private val supabaseClient: SupabaseClient)
                     }
                 }}
                 .decodeSingle<ProfileData>()
-            Log.d("test", "$result")
+            result
+        }
+
+    suspend fun getStatistics(): Statistics =
+        withContext(Dispatchers.IO) {
+            val result = supabaseClient.postgrest.rpc(
+                "get_statistics").decodeSingle<Statistics>()
             result
         }
 }
