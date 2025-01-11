@@ -13,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -51,11 +50,11 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
         }
     }
 
-    fun onVolumeSelected(seriesId: Int, volumeId: Int, onComplete: ()->Unit) {
+    fun onVolumeSelected(seriesId: Int, volumeId: Int, onComplete: () -> Unit) {
         _volumes.value = emptyList()
         viewModelScope.launch {
             fetchVolumes(seriesId)
-            _volumes.collect{ volumes ->
+            _volumes.collect { volumes ->
                 if (volumes.isNotEmpty()) {
                     selectVolumeById(volumeId)
                     onComplete()
@@ -182,7 +181,7 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
     }
 
     fun onUserVolumeUpdate(volumeToUpdate: VolumeToUpdate) {
-        Log.d ("UpdatePayload", volumeToUpdate.toString ())
+        Log.d("UpdatePayload", volumeToUpdate.toString())
         viewModelScope.launch {
             try {
                 val result = seriesRepository.updateUserVolume(volumeToUpdate)
@@ -209,7 +208,7 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
                     0,
                     false,
                 )
-                    _seriesRefreshFlag.value = result
+                _seriesRefreshFlag.value = result
 
             } catch (e: Exception) {
                 Log.e("error", "error deleting the volume")
@@ -223,13 +222,11 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
                 volume.copy(
                     times_read = timesRead,
                     owned = owned,
-                    user_volume_id = if(owned || timesRead > 0) userVolumeId else null,
+                    user_volume_id = if (owned || timesRead > 0) userVolumeId else null,
                     read_date = Clock.System.todayIn(TimeZone.currentSystemDefault())
                 )
             } else volume
         }
         _volumes.value = updatedVolumesList
-        Log.d("test", "user_id $userVolumeId, id $volumeId, times $timesRead, owned $owned")
     }
-
 }

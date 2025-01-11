@@ -23,9 +23,9 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
 
     suspend fun getSeriesPaginated(offset: Int, limit: Int, searchQuery: String): List<Series> =
         withContext(Dispatchers.IO) {
-                supabaseClient.postgrest.rpc(
-                    "get_series_paginated", Params(offset, limit, searchQuery)
-                ).decodeList<Series>()
+            supabaseClient.postgrest.rpc(
+                "get_series_paginated", Params(offset, limit, searchQuery)
+            ).decodeList<Series>()
         }
 
     suspend fun getSeries(seriesId: Int): Series =
@@ -35,12 +35,24 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
             ).decodeSingle<Series>()
         }
 
-    suspend fun getFollowedSeries(offset: Int, limit: Int): List<FollowedSeries> =
+    @Serializable
+    data class getFollowedSeriesParams(
+        val p_offset: Int,
+        val p_limit: Int,
+        val p_sort_by_date: Boolean,
+        val p_show_finished: Boolean
+    )
+
+    suspend fun getFollowedSeries(
+        offset: Int,
+        limit: Int,
+        sortByDate: Boolean,
+        showFinished: Boolean
+    ): List<FollowedSeries> =
         withContext(Dispatchers.IO) {
             supabaseClient.postgrest.rpc(
-                "get_followed_series", mapOf(
-                    "p_offset" to offset, "p_limit" to limit
-                )
+                "get_followed_series",
+                getFollowedSeriesParams(offset, limit, sortByDate, showFinished)
             ).decodeList<FollowedSeries>()
         }
 
@@ -129,9 +141,10 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
     suspend fun insertUserVolume(volumeToInsert: VolumeToInsert): Int? =
         withContext(Dispatchers.IO) {
             try {
-                val result = supabaseClient.from("user_volumes").upsert(volumeToInsert, onConflict = "profile_id, volume_id") {
-                    select(columns = Columns.list("id"))
-                }.decodeList<VolumeResponse>()
+                val result = supabaseClient.from("user_volumes")
+                    .upsert(volumeToInsert, onConflict = "profile_id, volume_id") {
+                        select(columns = Columns.list("id"))
+                    }.decodeList<VolumeResponse>()
                 result.firstOrNull()?.id
             } catch (e: Exception) {
                 e.message?.let { Log.e("InsertError", it) }

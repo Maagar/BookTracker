@@ -3,6 +3,8 @@ package com.example.booktracker.presentation.screen.Profile
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -29,8 +31,10 @@ fun ProfileScreen(
 ) {
     val profileData by profileViewModel.profileData.collectAsState()
     val stats by profileViewModel.stats.collectAsState()
+    val scrollState = rememberScrollState()
 
     Column(
+        modifier = Modifier.verticalScroll(scrollState),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -41,16 +45,19 @@ fun ProfileScreen(
         stats?.let { BooksPieChart(it.ownership_read_percentage) }
 
         StatCards(title = "Statistics") {
-            StatCard(title = "Followed series", stat = "${stats?.followed_series_count}")
-            StatCard(title = "Owned volumes", stat = "${stats?.owned_volumes_count}")
             StatCard(title = "Read volumes", stat = "${stats?.read_volumes_count}")
-
+            StatCard(title = "Owned volumes", stat = "${stats?.owned_volumes_count}")
+            StatCard(title = "Followed series", stat = "${stats?.followed_series_count}")
         }
 
-        Button(onClick = {
-            authViewModel.onSignOut()
-            toSignin()
-        }) {
+
+
+        Button(
+            modifier = Modifier.padding(16.dp),
+            onClick = {
+                authViewModel.onSignOut()
+                toSignin()
+            }) {
             Text(text = stringResource(R.string.sign_out))
         }
     }

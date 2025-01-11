@@ -19,9 +19,14 @@ class SeriesRepositoryImpl @Inject constructor(private val seriesDao: SeriesDao)
 
     }
 
-    override suspend fun getFollowedSeries(page: Int, pageSize: Int): List<FollowedSeries> {
+    override suspend fun getFollowedSeries(
+        page: Int,
+        pageSize: Int,
+        sortByDate: Boolean,
+        showFinished: Boolean
+    ): List<FollowedSeries> {
         val offset = page * pageSize
-        return seriesDao.getFollowedSeries(offset, pageSize)
+        return seriesDao.getFollowedSeries(offset, pageSize, sortByDate, showFinished)
     }
 
     override suspend fun getSeriesInfo(seriesId: Int): SeriesInfo {

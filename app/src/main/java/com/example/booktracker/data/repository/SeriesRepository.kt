@@ -11,7 +11,7 @@ import com.example.booktracker.data.model.VolumeToUpdate
 interface SeriesRepository {
 
     suspend fun getSeries(page: Int, pageSize: Int, searchQuery: String): List<Series>
-    suspend fun getFollowedSeries(page: Int, pageSize: Int): List<FollowedSeries>
+    suspend fun getFollowedSeries(page: Int, pageSize: Int, sortByDate: Boolean, showFinished: Boolean): List<FollowedSeries>
     suspend fun getSeriesInfo(seriesId: Int): SeriesInfo
     suspend fun getSeriesById(seriesId: Int): Series
     suspend fun getVolumes(seriesId: Int): List<Volume>

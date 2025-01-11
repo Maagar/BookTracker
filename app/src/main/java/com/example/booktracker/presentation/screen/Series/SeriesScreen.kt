@@ -61,11 +61,11 @@ fun SeriesScreen(
             Text(
                 modifier = Modifier.padding(start = 16.dp),
                 style = MaterialTheme.typography.titleSmall,
-                text = "Mark as:"
+                text = stringResource(R.string.mark_as)
             )
             if (showOwnedBottomSheet) {
                 ListItem(headlineContent = {
-                    Text("Not owned", style = MaterialTheme.typography.bodyMedium)
+                    Text(stringResource(R.string.not_owned), style = MaterialTheme.typography.bodyMedium)
                 }, modifier = Modifier.clickable {
                     bottomSheetVolume?.let { volume ->
                         if (volume.user_volume_id != null) {
@@ -88,7 +88,7 @@ fun SeriesScreen(
                 })
             } else if (showReadBottomSheet) {
                 ListItem(headlineContent = {
-                    Text("Not read", style = MaterialTheme.typography.bodyMedium)
+                    Text(stringResource(R.string.not_read), style = MaterialTheme.typography.bodyMedium)
                 }, modifier = Modifier.clickable {
                     bottomSheetVolume?.let { volume ->
                         if (volume.user_volume_id != null) {
@@ -111,7 +111,7 @@ fun SeriesScreen(
                 })
                 HorizontalDivider()
                 ListItem(headlineContent = {
-                    Text("Reread", style = MaterialTheme.typography.bodyMedium)
+                    Text(stringResource(R.string.reread), style = MaterialTheme.typography.bodyMedium)
                 }, modifier = Modifier.clickable {
                     bottomSheetVolume?.let { volume ->
                         if (volume.user_volume_id != null) {

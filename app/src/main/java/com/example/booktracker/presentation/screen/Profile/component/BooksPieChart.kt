@@ -98,7 +98,7 @@ fun getMessage(percentageRead: Float, context: Context): String {
         0f -> context.getString(R.string.zero_percent_message)
         in 0f..0.25f -> context.getString(R.string.low_percent_message)
         in 0.26f..0.75f -> context.getString(R.string.mid_percent_message)
-        in 0.76f..1f -> context.getString(R.string.high_percent_message)
+        in 0.76f..0.99f -> context.getString(R.string.high_percent_message)
         1f -> context.getString(R.string.hundred_percent_message)
         else -> context.getString(R.string.no_owned_books_message)
     }

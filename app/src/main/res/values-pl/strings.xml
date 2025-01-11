@@ -43,4 +43,13 @@
     <string name="high_percent_message">Większość książek już przeczytana! Jeszcze kilka i cała kolekcja będzie za tobą.</string>
     <string name="hundred_percent_message">Twoja biblioteka jest niemal w pełni przeczytana – wielkie brawa za ten postęp!</string>
     <string name="no_owned_books_message">Gratulacje! Każda książka z twojej kolekcji została przeczytana – czas na nowe wyzwania!</string>
+    <string name="mark_as">Oznacz jako:</string>
+    <string name="not_owned">Nie posiadany</string>
+    <string name="not_read">Nie przeczytany</string>
+    <string name="reread">Przeczytany ponownie</string>
+    <string name="sort_alphabetically">Sortuj w kolejności alfabetycznej</string>
+    <string name="sort_by_follow_date">Sortuj w kolejności dodania do obserwowanych</string>
+    <string name="hide_finished">Ukryj zakończone</string>
+    <string name="show_finished">Pokaż zakończone</string>
+    <string name="manage_series_display">Zarządzaj wyświetlaniem serii</string>
 </resources>

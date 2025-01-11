@@ -3,17 +3,22 @@ package com.example.booktracker.presentation.screen.Library
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.booktracker.data.local.UserPreferences
 import com.example.booktracker.data.model.FollowedSeries
 import com.example.booktracker.data.model.UpcomingVolume
 import com.example.booktracker.data.repository.SeriesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LibraryViewModel @Inject constructor(private val seriesRepository: SeriesRepository) :
+class LibraryViewModel @Inject constructor(
+    private val seriesRepository: SeriesRepository,
+    private val userPreferences: UserPreferences
+) :
     ViewModel() {
 
     private val _userSeries = MutableStateFlow<List<FollowedSeries>>(emptyList())
@@ -35,9 +40,20 @@ class LibraryViewModel @Inject constructor(private val seriesRepository: SeriesR
     private var isLoadingUpcoming = false
     private var isLastPageUpcoming = false
 
+    private val _sortByDate = MutableStateFlow(true)
+    val sortByDate: StateFlow<Boolean> = _sortByDate
+
+    private val _showFinished = MutableStateFlow(false)
+    val showFinished: StateFlow<Boolean> = _showFinished
+
+
     init {
-        fetchFollowedSeries()
-        fetchUpcomingSeries()
+        viewModelScope.launch {
+            _sortByDate.value = userPreferences.sortByDate.first()
+            _showFinished.value = userPreferences.showFinished.first()
+            fetchFollowedSeries()
+            fetchUpcomingSeries()
+        }
     }
 
     fun switchTab(index: Int) {
@@ -72,13 +88,34 @@ class LibraryViewModel @Inject constructor(private val seriesRepository: SeriesR
         }
     }
 
+    fun updateSorting(sortByDate: Boolean) {
+        _sortByDate.value = sortByDate
+        viewModelScope.launch {
+            userPreferences.saveSortBy(sortByDate)
+            refreshSeries()
+        }
+    }
+
+    fun updateShowFinished(showFinished: Boolean) {
+        _showFinished.value = showFinished
+        viewModelScope.launch {
+            userPreferences.saveShowFinished(showFinished)
+            refreshSeries()
+        }
+    }
+
     fun fetchFollowedSeries() {
         if (isLoading || isLastPage) return
 
         viewModelScope.launch {
             isLoading = true
             runCatching {
-                seriesRepository.getFollowedSeries(page = currentPage, pageSize = pageSize)
+                seriesRepository.getFollowedSeries(
+                    page = currentPage,
+                    pageSize = pageSize,
+                    sortByDate = _sortByDate.value,
+                    showFinished = _showFinished.value
+                )
             }.onSuccess { newSeries ->
                 if (newSeries.size < pageSize) {
                     isLastPage = true

@@ -42,4 +42,13 @@
     <string name="high_percent_message">Almost done! Just a few more books to conquer your collection.</string>
     <string name="hundred_percent_message">Every book, every page—your library is fully explored. Time to add more books!</string>
     <string name="no_owned_books_message">No books yet? The perfect time to pick your first read!</string>
+    <string name="mark_as">Mark as:</string>
+    <string name="not_owned">Not owned</string>
+    <string name="not_read">Not read</string>
+    <string name="reread">Reread</string>
+    <string name="sort_alphabetically">Sort alphabetically</string>
+    <string name="sort_by_follow_date">Sort by follow date</string>
+    <string name="hide_finished">Hide finished</string>
+    <string name="show_finished">Show finished</string>
+    <string name="manage_series_display">Manage Series Display</string>
 </resources>
