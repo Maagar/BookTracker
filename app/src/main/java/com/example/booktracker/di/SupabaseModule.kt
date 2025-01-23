@@ -15,7 +15,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object SupabaseModule {
-
     @Provides
     @Singleton
     fun provideSupabaseClient(): SupabaseClient {

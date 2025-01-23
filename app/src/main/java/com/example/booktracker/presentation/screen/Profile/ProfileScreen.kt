@@ -21,7 +21,7 @@ import com.example.booktracker.presentation.screen.Profile.component.BooksPieCha
 import com.example.booktracker.presentation.screen.Profile.component.ProfileHeader
 import com.example.booktracker.presentation.screen.Profile.component.StatCard
 import com.example.booktracker.presentation.screen.Profile.component.StatCards
-import com.example.booktracker.ui.viewmodel.AuthViewModel
+import com.example.booktracker.presentation.ui.viewmodel.AuthViewModel
 
 @Composable
 fun ProfileScreen(

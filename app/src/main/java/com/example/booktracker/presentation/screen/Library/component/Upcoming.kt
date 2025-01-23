@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.booktracker.presentation.screen.Library.LibraryViewModel
-import com.example.booktracker.ui.viewmodel.SeriesViewModel
+import com.example.booktracker.presentation.ui.viewmodel.SeriesViewModel
 
 @Composable
 fun Upcoming(

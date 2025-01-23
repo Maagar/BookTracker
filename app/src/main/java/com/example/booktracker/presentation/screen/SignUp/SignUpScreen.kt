@@ -20,13 +20,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.booktracker.R
-import com.example.booktracker.ui.viewmodel.AuthViewModel
+import com.example.booktracker.presentation.ui.viewmodel.AuthViewModel
 import com.example.booktracker.presentation.component.AuthInputField
 import com.example.booktracker.presentation.component.icon.Lock
 import com.example.booktracker.presentation.component.icon.Mail
@@ -45,6 +46,8 @@ fun SignUpScreen(viewModel: AuthViewModel = hiltViewModel(), toSignInScreen: (()
     val password = viewModel.password.collectAsState(initial = "")
     val passwordError = remember { mutableStateOf<String?>(null) }
     var passwordVisible by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     val signInResult by viewModel.signInResult.collectAsStateWithLifecycle(initialValue = null)
 
@@ -99,9 +102,9 @@ fun SignUpScreen(viewModel: AuthViewModel = hiltViewModel(), toSignInScreen: (()
         }
 
         Button(onClick = {
-            emailError.value = validateEmail(email.value)
-            passwordError.value = validatePassword(password.value)
-            usernameError.value = validateUsername(username.value)
+            emailError.value = validateEmail(email.value, context)
+            passwordError.value = validatePassword(password.value, context)
+            usernameError.value = validateUsername(username.value, context)
             if (emailError.value.isNullOrBlank() && passwordError.value.isNullOrBlank() && usernameError.value.isNullOrBlank()) {
                 viewModel.onSignUp()
             }

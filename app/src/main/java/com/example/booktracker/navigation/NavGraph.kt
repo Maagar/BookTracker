@@ -17,8 +17,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.booktracker.ui.viewmodel.AuthViewModel
-import com.example.booktracker.domain.model.UserState
+import com.example.booktracker.presentation.ui.viewmodel.AuthViewModel
+import com.example.booktracker.presentation.ui.UserState
 import com.example.booktracker.presentation.component.BottomNavigationBar
 import com.example.booktracker.presentation.screen.Discover.DiscoverScreen
 import com.example.booktracker.presentation.screen.Library.LibraryScreen
@@ -28,7 +28,7 @@ import com.example.booktracker.presentation.screen.Series.SeriesScreen
 import com.example.booktracker.presentation.screen.SignIn.SignInScreen
 import com.example.booktracker.presentation.screen.SignUp.SignUpScreen
 import com.example.booktracker.presentation.screen.Volume.VolumeScreen
-import com.example.booktracker.ui.viewmodel.SeriesViewModel
+import com.example.booktracker.presentation.ui.viewmodel.SeriesViewModel
 
 @Composable
 fun SetupNavGraph(

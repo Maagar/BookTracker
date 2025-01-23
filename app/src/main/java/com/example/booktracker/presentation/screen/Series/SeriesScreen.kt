@@ -31,7 +31,7 @@ import com.example.booktracker.presentation.component.TabRow
 import com.example.booktracker.presentation.screen.Series.component.SeriesHeader
 import com.example.booktracker.presentation.screen.Series.component.VolumeListItem
 import com.example.booktracker.presentation.component.SeriesProgressIndicator
-import com.example.booktracker.ui.viewmodel.SeriesViewModel
+import com.example.booktracker.presentation.ui.viewmodel.SeriesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

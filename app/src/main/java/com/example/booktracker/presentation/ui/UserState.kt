@@ -1,4 +1,4 @@
-package com.example.booktracker.domain.model
+package com.example.booktracker.presentation.ui
 
 sealed class UserState {
     object Loading: UserState()

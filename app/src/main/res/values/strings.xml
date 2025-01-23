@@ -51,4 +51,10 @@
     <string name="hide_finished">Hide finished</string>
     <string name="show_finished">Show finished</string>
     <string name="manage_series_display">Manage Series Display</string>
+    <string name="email_empty">Email cannot be empty.</string>
+    <string name="invalid_email">Invalid email format.</string>
+    <string name="password_empty">Password cannot be empty.</string>
+    <string name="short_password">Password must be at least 4 characters long.</string>
+    <string name="username_empty">Username cannot be empty.</string>
+    <string name="username_short">Username must be at least 3 characters long.</string>
 </resources>

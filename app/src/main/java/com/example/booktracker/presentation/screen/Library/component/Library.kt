@@ -11,7 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import com.example.booktracker.presentation.screen.Library.LibraryViewModel
-import com.example.booktracker.ui.viewmodel.SeriesViewModel
+import com.example.booktracker.presentation.ui.viewmodel.SeriesViewModel
 
 @Composable
 fun Library(

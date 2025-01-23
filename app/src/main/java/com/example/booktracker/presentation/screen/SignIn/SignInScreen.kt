@@ -27,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -34,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.booktracker.R
-import com.example.booktracker.ui.viewmodel.AuthViewModel
+import com.example.booktracker.presentation.ui.viewmodel.AuthViewModel
 import com.example.booktracker.presentation.component.AuthInputField
 import com.example.booktracker.presentation.component.ErrorSnackbar
 import com.example.booktracker.presentation.component.icon.Lock
@@ -61,6 +62,8 @@ fun SignInScreen(
     val swipeState = rememberSwipeToDismissBoxState()
 
     val signInResult by signInViewModel.signInResult.collectAsStateWithLifecycle(initialValue = null)
+
+    val context = LocalContext.current
 
     SnackbarHost(hostState = snackbarHostState) { snackbarData ->
         ErrorSnackbar(snackbarData = snackbarData, state = swipeState)
@@ -133,8 +136,8 @@ fun SignInScreen(
         }
         Button(
             onClick = {
-                emailError.value = validateEmail(email.value)
-                passwordError.value = validatePassword(password.value)
+                emailError.value = validateEmail(email.value, context)
+                passwordError.value = validatePassword(password.value, context)
                 if (emailError.value.isNullOrBlank() && passwordError.value.isNullOrBlank()) {
                     signInViewModel.onSignIn()
                 }

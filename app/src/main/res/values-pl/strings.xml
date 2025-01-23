@@ -52,4 +52,10 @@
     <string name="hide_finished">Ukryj zakończone</string>
     <string name="show_finished">Pokaż zakończone</string>
     <string name="manage_series_display">Zarządzaj wyświetlaniem serii</string>
+    <string name="password_empty">Pole hasło nie może być puste.</string>
+    <string name="short_password">Hasło musi mieć przynajmniej 4 znaki.</string>
+    <string name="username_empty">Pole pseudonim nie może być puste.</string>
+    <string name="username_short">Pseudonim musi mieć przynajmniej 3 znaki.</string>
+    <string name="email_empty">Pole email nie może być puste.</string>
+    <string name="invalid_email">Email jest niepoprawny.</string>
 </resources>

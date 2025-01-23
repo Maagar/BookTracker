@@ -4,7 +4,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Series (
+data class Series(
     val id: Int,
     val created_at: String,
     val title: String,

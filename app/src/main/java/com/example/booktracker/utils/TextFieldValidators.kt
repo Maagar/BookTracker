@@ -1,26 +1,29 @@
 package com.example.booktracker.utils
 
-fun validateEmail(email: String): String? {
+import android.content.Context
+import com.example.booktracker.R
+
+fun validateEmail(email: String, context: Context): String? {
     val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$".toRegex()
     return if (email.isEmpty()) {
-        "Email cannot be empty."
+        context.getString(R.string.email_empty)
     } else if (!email.matches(emailRegex)) {
-        "Invalid email format."
+        context.getString(R.string.invalid_email)
     } else null
 }
 
-fun validatePassword(password: String): String? {
+fun validatePassword(password: String, context: Context): String? {
     return if (password.isEmpty()) {
-        "Password cannot be empty."
+        context.getString(R.string.password_empty)
     } else if (password.length < 4) {
-        "Password must be at least 4 characters long."
+        context.getString(R.string.short_password)
     } else null
 }
 
-fun validateUsername(username: String): String? {
+fun validateUsername(username: String, context: Context): String? {
     return if (username.isEmpty()) {
-        "Username cannot be empty."
+        context.getString(R.string.username_empty)
     } else if (username.length < 3) {
-        "Username must be at least 3 characters long."
+        context.getString(R.string.username_short)
     } else null
 }

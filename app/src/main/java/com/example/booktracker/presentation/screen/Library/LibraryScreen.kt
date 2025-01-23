@@ -26,7 +26,7 @@ import com.example.booktracker.presentation.screen.Library.component.Library
 import com.example.booktracker.presentation.screen.Library.component.Upcoming
 import com.example.booktracker.presentation.component.TabRow
 import com.example.booktracker.presentation.screen.Library.component.FilterBottomSheet
-import com.example.booktracker.ui.viewmodel.SeriesViewModel
+import com.example.booktracker.presentation.ui.viewmodel.SeriesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,13 +64,16 @@ fun LibraryScreen(
 
         }
 
-        FloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            onClick = { showBottomSheet = true }) {
-            Icon(painterResource(R.drawable.filter_list), contentDescription = null)
+        if(libraryTabsState == 0) {
+            FloatingActionButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
+                onClick = { showBottomSheet = true }) {
+                Icon(painterResource(R.drawable.filter_list), contentDescription = null)
+            }
         }
+
 
         if (showBottomSheet) {
             FilterBottomSheet(

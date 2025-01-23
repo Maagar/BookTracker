@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.booktracker.R
 import com.example.booktracker.presentation.screen.Volume.component.VolumeChangeRow
-import com.example.booktracker.ui.viewmodel.SeriesViewModel
+import com.example.booktracker.presentation.ui.viewmodel.SeriesViewModel
 import com.example.ui.theme.AppTypography
 
 @Composable
