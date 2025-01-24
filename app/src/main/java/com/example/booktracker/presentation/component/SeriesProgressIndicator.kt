@@ -12,10 +12,10 @@ import androidx.compose.ui.unit.Dp
 @Composable
 fun SeriesProgressIndicator(ownedProgress: Float, readingProgress: Float, height: Dp) {
     Box(
-    modifier = Modifier
-    .fillMaxWidth()
-    .height(height)
-    .background(MaterialTheme.colorScheme.surfaceVariant)
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(height)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Box(
             modifier = Modifier

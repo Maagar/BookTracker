@@ -140,43 +140,39 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
 
     suspend fun insertUserVolume(volumeToInsert: VolumeToInsert): Int? =
         withContext(Dispatchers.IO) {
-            try {
+            runCatching {
                 val result = supabaseClient.from("user_volumes")
                     .upsert(volumeToInsert, onConflict = "profile_id, volume_id") {
                         select(columns = Columns.list("id"))
                     }.decodeList<VolumeResponse>()
                 result.firstOrNull()?.id
-            } catch (e: Exception) {
+            }.onFailure { e ->
                 e.message?.let { Log.e("InsertError", it) }
-                null
-            }
+            }.getOrNull()
         }
 
     suspend fun updateUserVolume(volumeToUpdate: VolumeToUpdate): Boolean =
         withContext(Dispatchers.IO) {
-            try {
+            runCatching {
                 supabaseClient.from("user_volumes").update(volumeToUpdate) {
                     filter { eq("id", volumeToUpdate.id) }
                 }
                 true
-            } catch (e: Exception) {
+            }.onFailure { e ->
                 e.message?.let { Log.e("InsertError", it) }
-                false
-            }
+            }.getOrDefault(false)
         }
 
     suspend fun deleteUserVolume(userVolumeId: Int): Boolean =
         withContext(Dispatchers.IO) {
-            try {
+            runCatching {
                 supabaseClient.from("user_volumes").delete() {
                     filter { eq("id", userVolumeId) }
                 }
-
                 true
-            } catch (e: Exception) {
+            }.onFailure { e ->
                 e.message?.let { Log.e("InsertError", it) }
-                false
-            }
+            }.getOrDefault(false)
         }
 
 }

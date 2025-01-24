@@ -1,10 +1,7 @@
 package com.example.booktracker.navigation
 
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -16,9 +13,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.booktracker.presentation.ui.viewmodel.AuthViewModel
-import com.example.booktracker.presentation.ui.UserState
 import com.example.booktracker.presentation.component.BottomNavigationBar
 import com.example.booktracker.presentation.screen.Discover.DiscoverScreen
 import com.example.booktracker.presentation.screen.Library.LibraryScreen
@@ -37,48 +32,21 @@ fun SetupNavGraph(
     seriesViewModel: SeriesViewModel = hiltViewModel()
 ) {
     val userState by authViewModel.userState.collectAsState()
+    val startDestination = getStartDestination(userState)
 
-    val startDestination = when (userState) {
-        UserState.Loading -> Screen.Loading
-        UserState.NotSignedIn -> Screen.SignIn
-        UserState.SignedIn -> Screen.Library
-    }
-    val toSignUpScreen = {
-        navController.navigate(
-            Screen.SignUp
-        ) {
-            popUpTo(Screen.SignIn) { inclusive = true }
+    fun navigateTo(screen: Screen, popUpToScreen: Screen? = null) {
+        navController.navigate(screen) {
+            popUpToScreen?.let { popUpTo(it) { inclusive = true } }
         }
     }
-
-    val toSignInScreen = {
-        navController.navigate(
-            Screen.SignIn
-        ) {
-            popUpTo(0) { inclusive = true }
-        }
-    }
-
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = currentBackStackEntry?.destination?.route?.let {
-        when (it) {
-            Screen.SignIn::class.qualifiedName -> Screen.SignIn
-            Screen.SignUp::class.qualifiedName -> Screen.SignUp
-            Screen.Library::class.qualifiedName -> Screen.Library
-            Screen.Discover::class.qualifiedName -> Screen.Discover
-            Screen.Profile::class.qualifiedName -> Screen.Profile
-            Screen.Loading::class.qualifiedName -> Screen.Loading
-            Screen.Series::class.qualifiedName -> Screen.Series
-            Screen.Volume::class.qualifiedName -> Screen.Volume
-            else -> null
-        }
-    }
-    val showScaffold = currentScreen?.showScaffold ?: false
 
     Scaffold(
         bottomBar = {
-            if (showScaffold) {
-                BottomNavigationBar(navController = navController, currentScreen)
+            if (getScaffoldVisibility(navController)) {
+                BottomNavigationBar(
+                    navController = navController,
+                    currentScreen = getCurrentScreen(navController)
+                )
             }
         }
     ) { innerPadding ->
@@ -89,95 +57,47 @@ fun SetupNavGraph(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            composable<Screen.Loading> {
-                LoadingScreen()
-            }
+            composable<Screen.Loading> { LoadingScreen() }
             composable<Screen.SignIn> {
-                SignInScreen(toSignUpScreen,
-                    toHomeScreen = {
-                        navController.navigate(
-                            Screen.Library
-                        ) {
-                            popUpTo(Screen.SignIn) { inclusive = true }
-                        }
-                    })
+                SignInScreen(
+                    toSignUpScreen = { navigateTo(Screen.SignUp, Screen.SignIn) },
+                    toHomeScreen = { navigateTo(Screen.Library, Screen.SignIn) }
+                )
             }
             composable<Screen.SignUp> {
-                SignUpScreen(toSignInScreen = {
-                    navController.navigate(
-                        Screen.SignIn
-                    ) {
-                        popUpTo(Screen.SignUp) { inclusive = true }
-                    }
-                },
-                    toHomeScreen = {
-                        navController.navigate(
-                            Screen.Library
-                        ) {
-                            popUpTo(Screen.SignUp) { inclusive = true }
-                        }
-                    })
+                SignUpScreen(
+                    toSignInScreen = { navigateTo(Screen.SignIn, Screen.SignUp) },
+                    toHomeScreen = { navigateTo(Screen.Library, Screen.SignUp) }
+                )
             }
             composable<Screen.Library> {
-                LibraryScreen(seriesViewModel, toSeriesScreen = {
-                    navController.navigate(Screen.Series) { launchSingleTop = true }
-                }, toVolumeScreen = {
-                    navController.navigate(Screen.Volume) { launchSingleTop = true }
-                })
+                LibraryScreen(
+                    seriesViewModel,
+                    toSeriesScreen = { navigateTo(Screen.Series) },
+                    toVolumeScreen = { navigateTo(Screen.Volume) }
+                )
             }
             composable<Screen.Discover> {
-                DiscoverScreen(seriesViewModel, toSeriesScreen = {
-                    navController.navigate(Screen.Series) { launchSingleTop = true }
-                })
+                DiscoverScreen(seriesViewModel, toSeriesScreen = { navigateTo(Screen.Series) })
             }
             composable<Screen.Profile> {
-                ProfileScreen(toSignInScreen)
+                ProfileScreen(toSignIn = { navigateTo(Screen.SignIn) })
             }
             composable<Screen.Series>(
-                enterTransition = {
-                    slideInVertically(
-                        initialOffsetY = { 3000 },
-                        animationSpec = tween(500)
-                    )
-                },
+                enterTransition = { slideInTransition() },
                 exitTransition = { fadeOut() },
-                popExitTransition = {
-                    slideOutVertically(
-                        targetOffsetY = { 3000 },
-                        animationSpec = tween(500)
-                    )
-                },
+                popExitTransition = { slideOutTransition() },
                 popEnterTransition = { fadeIn() }
             ) {
-                SeriesScreen(seriesViewModel, toVolumeScreen = {
-                    navController.navigate(Screen.Volume) { launchSingleTop = true }
-                })
+                SeriesScreen(seriesViewModel, toVolumeScreen = { navigateTo(Screen.Volume) })
             }
-
             composable<Screen.Volume>(
-                enterTransition = {
-                    slideInVertically(
-                        initialOffsetY = { 3000 },
-                        animationSpec = tween(500)
-                    )
-                },
-                exitTransition = {
-                    slideOutVertically(
-                        targetOffsetY = { 3000 },
-                        animationSpec = tween(500)
-                    )
-                },
-                popExitTransition = {
-                    slideOutVertically(
-                        targetOffsetY = { 3000 },
-                        animationSpec = tween(500)
-                    )
-                }
+                enterTransition = { slideInTransition() },
+                exitTransition = { slideOutTransition() },
+                popExitTransition = { slideOutTransition() }
             ) {
                 VolumeScreen(seriesViewModel)
             }
         }
     }
-
-
 }

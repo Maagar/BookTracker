@@ -20,4 +20,20 @@ sealed class Screen(val showScaffold: Boolean = false) {
     data object Series: Screen()
     @Serializable
     data object Volume: Screen()
+
+    companion object {
+        fun fromRoute(route: String): Screen? {
+            return when (route) {
+                SignIn::class.qualifiedName -> SignIn
+                SignUp::class.qualifiedName -> SignUp
+                Library::class.qualifiedName -> Library
+                Discover::class.qualifiedName -> Discover
+                Profile::class.qualifiedName -> Profile
+                Loading::class.qualifiedName -> Loading
+                Series::class.qualifiedName -> Series
+                Volume::class.qualifiedName -> Volume
+                else -> null
+            }
+        }
+    }
 }

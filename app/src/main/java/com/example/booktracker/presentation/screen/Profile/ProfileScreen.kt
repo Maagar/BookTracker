@@ -25,7 +25,7 @@ import com.example.booktracker.presentation.ui.viewmodel.AuthViewModel
 
 @Composable
 fun ProfileScreen(
-    toSignin: (() -> Unit),
+    toSignIn: (() -> Unit),
     authViewModel: AuthViewModel = hiltViewModel(),
     profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
@@ -56,7 +56,7 @@ fun ProfileScreen(
             modifier = Modifier.padding(16.dp),
             onClick = {
                 authViewModel.onSignOut()
-                toSignin()
+                toSignIn()
             }) {
             Text(text = stringResource(R.string.sign_out))
         }
