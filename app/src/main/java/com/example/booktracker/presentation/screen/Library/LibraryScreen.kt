@@ -37,10 +37,11 @@ fun LibraryScreen(
     toVolumeScreen: (() -> Unit)
 ) {
     val libraryTabsState by libraryViewModel.libraryTabsState.collectAsState()
-    val sheetState = rememberModalBottomSheetState()
-    var showBottomSheet by remember { mutableStateOf(false) }
     val sortByDate by libraryViewModel.sortByDate.collectAsState()
     val showFinished by libraryViewModel.showFinished.collectAsState()
+
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -61,10 +62,9 @@ fun LibraryScreen(
             } else if (libraryTabsState == 1) {
                 Upcoming(seriesViewModel, libraryViewModel, toSeriesScreen, toVolumeScreen)
             }
-
         }
 
-        if(libraryTabsState == 0) {
+        if (libraryTabsState == 0) {
             FloatingActionButton(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -73,7 +73,6 @@ fun LibraryScreen(
                 Icon(painterResource(R.drawable.filter_list), contentDescription = null)
             }
         }
-
 
         if (showBottomSheet) {
             FilterBottomSheet(

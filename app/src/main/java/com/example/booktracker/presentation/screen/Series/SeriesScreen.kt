@@ -56,6 +56,7 @@ fun SeriesScreen(
                 showOwnedBottomSheet = false
                 showReadBottomSheet = false
             },
+            containerColor = MaterialTheme.colorScheme.background,
             sheetState = sheetState
         ) {
             Text(

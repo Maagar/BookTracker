@@ -2,11 +2,11 @@ package com.example.booktracker.data.network
 
 import android.util.Log
 import com.example.booktracker.data.model.FollowedSeries
-import com.example.booktracker.data.model.Params
 import com.example.booktracker.data.model.Series
 import com.example.booktracker.data.model.SeriesInfo
 import com.example.booktracker.data.model.UpcomingVolume
 import com.example.booktracker.data.model.Volume
+import com.example.booktracker.data.model.VolumeResponse
 import com.example.booktracker.data.model.VolumeToInsert
 import com.example.booktracker.data.model.VolumeToUpdate
 import io.github.jan.supabase.SupabaseClient
@@ -16,7 +16,6 @@ import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.rpc
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
 import javax.inject.Inject
 
 class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) {
@@ -24,7 +23,7 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
     suspend fun getSeriesPaginated(offset: Int, limit: Int, searchQuery: String): List<Series> =
         withContext(Dispatchers.IO) {
             supabaseClient.postgrest.rpc(
-                "get_series_paginated", Params(offset, limit, searchQuery)
+                "get_series_paginated", seriesParams(offset, limit, searchQuery)
             ).decodeList<Series>()
         }
 
@@ -34,14 +33,6 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
                 "get_series_by_id", mapOf("p_series_id" to seriesId)
             ).decodeSingle<Series>()
         }
-
-    @Serializable
-    data class getFollowedSeriesParams(
-        val p_offset: Int,
-        val p_limit: Int,
-        val p_sort_by_date: Boolean,
-        val p_show_finished: Boolean
-    )
 
     suspend fun getFollowedSeries(
         offset: Int,
@@ -112,31 +103,27 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
     }
 
     suspend fun insertUserSeries(seriesId: Int): Boolean = withContext(Dispatchers.IO) {
-        try {
+        runCatching {
             val data = mapOf("series_id" to seriesId)
             supabaseClient.from("user_series").upsert(data, onConflict = "profile_id, series_id")
             true
-        } catch (e: Exception) {
+        }.getOrElse { e ->
             Log.e("insertError", "Error inserting user series", e)
             false
         }
-
     }
 
     suspend fun deleteUserSeries(seriesId: Int): Boolean = withContext(Dispatchers.IO) {
-        try {
+        runCatching {
             supabaseClient.from("user_series").delete {
                 filter { eq("series_id", seriesId) }
             }
             true
-        } catch (e: Exception) {
+        }.getOrElse { e ->
             Log.e("DeleteError", "Error deleting user series", e)
             false
         }
     }
-
-    @Serializable
-    data class VolumeResponse(val id: Int)
 
     suspend fun insertUserVolume(volumeToInsert: VolumeToInsert): Int? =
         withContext(Dispatchers.IO) {
@@ -174,5 +161,4 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
                 e.message?.let { Log.e("InsertError", it) }
             }.getOrDefault(false)
         }
-
 }

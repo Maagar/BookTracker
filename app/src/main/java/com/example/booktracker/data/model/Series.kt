@@ -15,10 +15,3 @@ data class Series(
     var total_volumes_released: Int,
     var is_following: Boolean
 )
-
-@Serializable
-class Params (
-    val p_offset: Int,
-    val p_limit: Int,
-    val p_search_query: String
-)

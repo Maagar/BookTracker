@@ -12,29 +12,25 @@ class AuthenticationRepositoryImpl @Inject constructor(
     private val auth: Auth,
     private val userPreferences: UserPreferences
 ) : AuthenticationRepository {
+
     override suspend fun signIn(email: String, password: String): Boolean {
-        return try {
+        return runCatching {
             auth.signInWith(Email) {
                 this.email = email
                 this.password = password
             }
             true
-        } catch (e: Exception) {
-            false
-        }
+        }.getOrDefault(false)
     }
 
     override suspend fun signUp(email: String, password: String, data: JsonObject): Boolean {
-        return try {
+        return runCatching {
             auth.signUpWith(Email) {
                 this.email = email
                 this.password = password
                 this.data = data
             }
-            true
-        } catch (e: Exception) {
-            false
-        }
+        }.isSuccess
     }
 
     override suspend fun saveToken() {
@@ -46,36 +42,40 @@ class AuthenticationRepositoryImpl @Inject constructor(
 
     override suspend fun isUserSignedIn(): Boolean {
         val userSession = userPreferences.userSession.firstOrNull()
-        if (userSession != null) {
-            if (userSession.token.isEmpty()) return false
-            else {
+        return if (userSession != null && userSession.token.isNotEmpty()) {
+            runCatching {
                 auth.retrieveUser(userSession.token)
                 auth.refreshCurrentSession()
                 saveToken()
-                return true
-            }
-        } else return false
+            }.isSuccess
+        } else {
+            false
+        }
     }
 
     override suspend fun checkAndRefreshSession() {
         val userSession = userPreferences.userSession.firstOrNull()
         if (userSession != null && userSession.token.isNotEmpty()) {
-            try {
+            runCatching {
                 auth.retrieveUser(userSession.token)
                 auth.refreshCurrentSession()
                 val refreshedAccessToken = auth.currentAccessTokenOrNull()
-                if(refreshedAccessToken != null) {
+                if (refreshedAccessToken != null) {
                     userPreferences.saveUserSession(refreshedAccessToken)
                 }
-            } catch (e: Exception) {
+            }.onFailure {
                 userPreferences.clearUserSession()
             }
-
         }
     }
 
     override suspend fun signOut() {
-        userPreferences.clearUserSession()
-        auth.signOut()
+        runCatching {
+            auth.signOut()
+        }.onFailure { e ->
+            e.printStackTrace()
+        }.also {
+            userPreferences.clearUserSession()
+        }
     }
 }

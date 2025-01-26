@@ -31,3 +31,6 @@ data class VolumeToUpdate(
     val times_read: Int,
     val owned: Boolean,
 )
+
+@Serializable
+data class VolumeResponse(val id: Int)

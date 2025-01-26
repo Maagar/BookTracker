@@ -9,7 +9,6 @@ import com.example.booktracker.data.model.VolumeToInsert
 import com.example.booktracker.data.model.VolumeToUpdate
 
 interface SeriesRepository {
-
     suspend fun getSeries(page: Int, pageSize: Int, searchQuery: String): List<Series>
     suspend fun getFollowedSeries(page: Int, pageSize: Int, sortByDate: Boolean, showFinished: Boolean): List<FollowedSeries>
     suspend fun getSeriesInfo(seriesId: Int): SeriesInfo
@@ -22,5 +21,4 @@ interface SeriesRepository {
     suspend fun updateUserVolume(volumeToUpdate: VolumeToUpdate): Boolean
     suspend fun deleteUserVolume(userVolumeId: Int): Boolean
     suspend fun getUpcomingVolumes(page: Int, pageSize: Int): List<UpcomingVolume>
-
 }

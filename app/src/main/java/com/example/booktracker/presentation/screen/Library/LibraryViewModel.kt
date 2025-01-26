@@ -46,7 +46,6 @@ class LibraryViewModel @Inject constructor(
     private val _showFinished = MutableStateFlow(false)
     val showFinished: StateFlow<Boolean> = _showFinished
 
-
     init {
         viewModelScope.launch {
             _sortByDate.value = userPreferences.sortByDate.first()
