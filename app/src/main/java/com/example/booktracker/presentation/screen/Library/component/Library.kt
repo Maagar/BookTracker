@@ -1,15 +1,16 @@
 package com.example.booktracker.presentation.screen.Library.component
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Modifier
+import com.example.booktracker.data.model.FollowedSeries
 import com.example.booktracker.presentation.screen.Library.LibraryViewModel
 import com.example.booktracker.presentation.ui.viewmodel.SeriesViewModel
 
@@ -17,22 +18,16 @@ import com.example.booktracker.presentation.ui.viewmodel.SeriesViewModel
 fun Library(
     seriesViewModel: SeriesViewModel,
     libraryViewModel: LibraryViewModel,
+    userSeries: List<FollowedSeries>,
     toSeriesScreen: () -> Unit
 ) {
-    val userSeries by libraryViewModel.userSeries.collectAsState()
-    val refreshFlag by seriesViewModel.seriesRefreshFlag.collectAsState()
     val gridState = rememberLazyGridState()
 
-    LaunchedEffect(refreshFlag) {
-        if (refreshFlag) {
-            libraryViewModel.refreshSeries()
-            seriesViewModel.resetRefreshFlag()
-        }
-    }
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.Top,
-        state = gridState
+        state = gridState,
+        modifier = Modifier.fillMaxSize()
     ) {
         items(userSeries) { followedSeries ->
             SeriesCard(

@@ -30,6 +30,11 @@ class LibraryViewModel @Inject constructor(
     private val _libraryTabsState = MutableStateFlow(0)
     val libraryTabsState: StateFlow<Int> = _libraryTabsState
 
+    private val _isFollowedRefreshing = MutableStateFlow(false)
+    val isFollowedRefreshing: StateFlow<Boolean> = _isFollowedRefreshing
+    private val _isUpcomingRefreshing = MutableStateFlow(false)
+    val isUpcomingRefreshing: StateFlow<Boolean> = _isUpcomingRefreshing
+
     private var currentPage = 0
     private val pageSize = 20
     private var isLoading = false
@@ -55,22 +60,40 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
+    fun startFollowedRefreshing() {
+        _isFollowedRefreshing.value = true
+    }
+
+    fun startUpcomingRefreshing() {
+        _isUpcomingRefreshing.value = true
+    }
+
+
     fun switchTab(index: Int) {
         _libraryTabsState.value = index
     }
 
-    fun refreshSeries() {
-        _userSeries.value = emptyList()
-        isLastPage = false
-        currentPage = 0
-        fetchFollowedSeries()
+    fun refreshFollowedSeries() {
+        viewModelScope.launch {
+            _userSeries.value = emptyList()
+            isLastPage = false
+            currentPage = 0
+            fetchFollowedSeries()
+        }
+    }
+
+    fun refreshUpcomingSeries() {
+        _upcomingVolumes.value = emptyList()
+        isLastPageUpcoming = false
+        currentPageUpcoming = 0
+        fetchUpcomingSeries()
     }
 
     fun fetchUpcomingSeries() {
         if (isLoadingUpcoming || isLastPageUpcoming) return
 
         viewModelScope.launch {
-            isLoading = true
+            isLoadingUpcoming = true
             runCatching {
                 seriesRepository.getUpcomingVolumes(currentPageUpcoming, pageSizeUpcoming)
             }.onSuccess { newVolumes ->
@@ -78,11 +101,12 @@ class LibraryViewModel @Inject constructor(
                     isLastPageUpcoming = true
                 }
                 _upcomingVolumes.value += newVolumes
-                currentPage++
+                currentPageUpcoming++
             }.onFailure { e ->
                 Log.e("LibraryViewModel", "Error fetching upcoming volumes", e)
             }.also {
                 isLoadingUpcoming = false
+                _isUpcomingRefreshing.value = false
             }
         }
     }
@@ -91,7 +115,7 @@ class LibraryViewModel @Inject constructor(
         _sortByDate.value = sortByDate
         viewModelScope.launch {
             userPreferences.saveSortBy(sortByDate)
-            refreshSeries()
+            refreshFollowedSeries()
         }
     }
 
@@ -99,7 +123,7 @@ class LibraryViewModel @Inject constructor(
         _showFinished.value = showFinished
         viewModelScope.launch {
             userPreferences.saveShowFinished(showFinished)
-            refreshSeries()
+            refreshFollowedSeries()
         }
     }
 
@@ -125,6 +149,7 @@ class LibraryViewModel @Inject constructor(
                 Log.e("SeriesViewModel", "Error fetching series", e)
             }.also {
                 isLoading = false
+                _isFollowedRefreshing.value = false
             }
         }
     }

@@ -57,4 +57,5 @@
     <string name="short_password">Password must be at least 4 characters long.</string>
     <string name="username_empty">Username cannot be empty.</string>
     <string name="username_short">Username must be at least 3 characters long.</string>
+    <string name="Empty_library_message">Looks like you have no ongoing series to track. Find your next favorite series and stay up to date!</string>
 </resources>

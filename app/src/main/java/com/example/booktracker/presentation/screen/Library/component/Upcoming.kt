@@ -1,6 +1,7 @@
 package com.example.booktracker.presentation.screen.Library.component
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,7 +26,7 @@ fun Upcoming(
     val listState = rememberLazyListState()
     val upcomingVolumes by libraryViewModel.upcomingVolumes.collectAsState(emptyList())
 
-    LazyColumn(verticalArrangement = Arrangement.Top, state = listState) {
+    LazyColumn(verticalArrangement = Arrangement.Top, state = listState, modifier = Modifier.fillMaxSize()) {
         items(upcomingVolumes) { upcomingVolume ->
             UpcomingListItem(
                 upcomingVolume = upcomingVolume,

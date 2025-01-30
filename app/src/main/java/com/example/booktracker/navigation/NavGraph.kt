@@ -36,7 +36,9 @@ fun SetupNavGraph(
 
     fun navigateTo(screen: Screen, popUpToScreen: Screen? = null) {
         navController.navigate(screen) {
-            popUpToScreen?.let { popUpTo(it) { inclusive = true } }
+            popUpToScreen?.let {
+                popUpTo(it) { inclusive = true }
+            }
         }
     }
 
@@ -81,7 +83,12 @@ fun SetupNavGraph(
                 DiscoverScreen(seriesViewModel, toSeriesScreen = { navigateTo(Screen.Series) })
             }
             composable<Screen.Profile> {
-                ProfileScreen(toSignIn = { navigateTo(Screen.SignIn) })
+                ProfileScreen(toSignIn = {
+                    navController.navigate(Screen.SignIn) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                })
             }
             composable<Screen.Series>(
                 enterTransition = { slideInTransition() },

@@ -28,8 +28,18 @@ class DiscoverViewModel @Inject constructor(private val seriesRepository: Series
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
     init {
         fetchSeries()
+    }
+
+    fun setIsRefreshing() {
+        _series.value = emptyList()
+        isLastPage = false
+        currentPage = 0
+        _isRefreshing.value = true
     }
 
     fun onQueryChange(query: String) {
@@ -66,6 +76,7 @@ class DiscoverViewModel @Inject constructor(private val seriesRepository: Series
                 Log.e("DiscoverViewModel", "Error fetching series", e)
             } finally {
                 isLoading = false
+                _isRefreshing.value = false
             }
         }
     }
@@ -85,6 +96,7 @@ class DiscoverViewModel @Inject constructor(private val seriesRepository: Series
                 searchSeries()
             }
         }
+        _isRefreshing.value = false
     }
 
     fun refreshSeries(seriesId: Int) {
