@@ -35,6 +35,9 @@ class LibraryViewModel @Inject constructor(
     private val _isUpcomingRefreshing = MutableStateFlow(false)
     val isUpcomingRefreshing: StateFlow<Boolean> = _isUpcomingRefreshing
 
+    private val _isFetching = MutableStateFlow(true)
+    val isFetching: StateFlow<Boolean> = _isFetching
+
     private var currentPage = 0
     private val pageSize = 20
     private var isLoading = false
@@ -74,12 +77,11 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun refreshFollowedSeries() {
-        viewModelScope.launch {
-            _userSeries.value = emptyList()
-            isLastPage = false
-            currentPage = 0
-            fetchFollowedSeries()
-        }
+        _isFetching.value = true
+        _userSeries.value = emptyList()
+        isLastPage = false
+        currentPage = 0
+        fetchFollowedSeries()
     }
 
     fun refreshUpcomingSeries() {
@@ -106,6 +108,7 @@ class LibraryViewModel @Inject constructor(
                 Log.e("LibraryViewModel", "Error fetching upcoming volumes", e)
             }.also {
                 isLoadingUpcoming = false
+                _isFetching.value = false
                 _isUpcomingRefreshing.value = false
             }
         }

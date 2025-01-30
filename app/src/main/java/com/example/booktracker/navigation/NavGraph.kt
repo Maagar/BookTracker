@@ -35,10 +35,11 @@ fun SetupNavGraph(
     val startDestination = getStartDestination(userState)
 
     fun navigateTo(screen: Screen, popUpToScreen: Screen? = null) {
-        navController.navigate(screen) {
+        navController.navigate(screen::class.qualifiedName ?: return) {
             popUpToScreen?.let {
-                popUpTo(it) { inclusive = true }
+                popUpTo(it::class.qualifiedName ?: return@let) { inclusive = true }
             }
+            launchSingleTop = true
         }
     }
 

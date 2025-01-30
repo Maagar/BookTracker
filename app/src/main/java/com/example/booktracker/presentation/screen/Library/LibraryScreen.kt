@@ -44,7 +44,7 @@ fun LibraryScreen(
     val sortByDate by libraryViewModel.sortByDate.collectAsState()
     val showFinished by libraryViewModel.showFinished.collectAsState()
     val userSeries by libraryViewModel.userSeries.collectAsState()
-
+    val isFetching by libraryViewModel.isFetching.collectAsState()
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
 
@@ -87,10 +87,10 @@ fun LibraryScreen(
                     },
                     isRefreshing = isFollowedRefreshing
                 ) {
-                    if (userSeries.isEmpty()) {
-                        EmptyLibraryMessage()
-                    } else {
+                    if (userSeries.isNotEmpty()) {
                         Library(seriesViewModel, libraryViewModel, userSeries, toSeriesScreen)
+                    } else if (!isFetching){
+                        EmptyLibraryMessage()
                     }
                 }
             } else if (libraryTabsState == 1) {
