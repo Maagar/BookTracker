@@ -27,7 +27,7 @@
     <string name="previous_volume">Previous volume</string>
     <string name="next_volume">Next volume</string>
     <string name="release_date_not_yet_announced">Release date not yet announced</string>
-    <string name="not_read_yet">Not read yet</string>
+    <string name="not_read_yet">Not read</string>
     <string name="first_volume_msg">You\'re at the beginning of the series! Time to start the adventure.</string>
     <string name="last_volume_msg">Congratulations! You\'ve finished this part of the series. If this is the last volume, thank you for joining us on this journey!</string>
     <string name="sign_out">Sign Out</string>

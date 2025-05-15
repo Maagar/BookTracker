@@ -1,18 +1,16 @@
 package com.example.booktracker.presentation.screen.Series
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,17 +18,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.booktracker.R
 import com.example.booktracker.data.model.Volume
-import com.example.booktracker.data.model.VolumeToUpdate
 import com.example.booktracker.presentation.screen.Series.component.AboutSeries
 import com.example.booktracker.presentation.component.TabRow
 import com.example.booktracker.presentation.screen.Series.component.SeriesHeader
 import com.example.booktracker.presentation.screen.Series.component.VolumeListItem
 import com.example.booktracker.presentation.component.SeriesProgressIndicator
+import com.example.booktracker.presentation.component.VolumeBottomSheet
 import com.example.booktracker.presentation.ui.viewmodel.SeriesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,6 +38,7 @@ fun SeriesScreen(
     seriesViewModel: SeriesViewModel,
     toVolumeScreen: () -> Unit
 ) {
+
     val series by seriesViewModel.series.collectAsState()
     val seriesInfo by seriesViewModel.seriesInfo.collectAsState()
     val volumes by seriesViewModel.volumes.collectAsState()
@@ -50,91 +50,26 @@ fun SeriesScreen(
     val sheetState = rememberModalBottomSheetState()
     var bottomSheetVolume by remember { mutableStateOf<Volume?>(null) }
 
-    if (showOwnedBottomSheet || showReadBottomSheet) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                showOwnedBottomSheet = false
-                showReadBottomSheet = false
-            },
-            containerColor = MaterialTheme.colorScheme.background,
-            sheetState = sheetState
-        ) {
-            Text(
-                modifier = Modifier.padding(start = 16.dp),
-                style = MaterialTheme.typography.titleSmall,
-                text = stringResource(R.string.mark_as)
-            )
-            if (showOwnedBottomSheet) {
-                ListItem(headlineContent = {
-                    Text(stringResource(R.string.not_owned), style = MaterialTheme.typography.bodyMedium)
-                }, modifier = Modifier.clickable {
-                    bottomSheetVolume?.let { volume ->
-                        if (volume.user_volume_id != null) {
-                            if (volume.times_read > 0) {
-                                seriesViewModel.onUserVolumeUpdate(
-                                    VolumeToUpdate(
-                                        volume.user_volume_id,
-                                        volume.id,
-                                        volume.times_read,
-                                        false
-                                    )
-                                )
-                            } else if (volume.times_read == 0) {
-                                seriesViewModel.onUserVolumeDelete(volume.user_volume_id, volume.id)
-                            }
-
-                        }
-                        showOwnedBottomSheet = false
-                    }
-                })
-            } else if (showReadBottomSheet) {
-                ListItem(headlineContent = {
-                    Text(stringResource(R.string.not_read), style = MaterialTheme.typography.bodyMedium)
-                }, modifier = Modifier.clickable {
-                    bottomSheetVolume?.let { volume ->
-                        if (volume.user_volume_id != null) {
-                            if (volume.owned) {
-                                seriesViewModel.onUserVolumeUpdate(
-                                    VolumeToUpdate(
-                                        volume.user_volume_id,
-                                        volume.id,
-                                        0,
-                                        volume.owned
-                                    )
-                                )
-                            } else if (!volume.owned) {
-                                seriesViewModel.onUserVolumeDelete(volume.user_volume_id, volume.id)
-                            }
-
-                        }
-                        showReadBottomSheet = false
-                    }
-                })
-                HorizontalDivider()
-                ListItem(headlineContent = {
-                    Text(stringResource(R.string.reread), style = MaterialTheme.typography.bodyMedium)
-                }, modifier = Modifier.clickable {
-                    bottomSheetVolume?.let { volume ->
-                        if (volume.user_volume_id != null) {
-                            seriesViewModel.onUserVolumeUpdate(
-                                VolumeToUpdate(
-                                    volume.user_volume_id,
-                                    volume.id,
-                                    volume.times_read + 1,
-                                    volume.owned
-                                )
-                            )
-                        }
-                        showReadBottomSheet = false
-                    }
-                })
-            }
-        }
-    }
+    VolumeBottomSheet(
+        showOwnedBottomSheet = showOwnedBottomSheet,
+        showReadBottomSheet = showReadBottomSheet,
+        onDismiss = {
+            showOwnedBottomSheet = false
+            showReadBottomSheet = false
+        },
+        sheetState = sheetState,
+        bottomSheetVolume = bottomSheetVolume
+    )
 
     Surface {
         if (series == null || volumes == null || seriesInfo == null) {
-            Text("Loading series details...")
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         } else {
             Column(
                 modifier = Modifier.padding(8.dp),
@@ -166,12 +101,6 @@ fun SeriesScreen(
                                 onItemClick = { selectedVolume ->
                                     seriesViewModel.selectVolume(volumes.indexOf(selectedVolume))
                                     toVolumeScreen()
-                                },
-                                onUserVolumeInsert = { volumeToInsert ->
-                                    seriesViewModel.onUserVolumeInsert(volumeToInsert)
-                                },
-                                onUserVolumeUpdate = { volumeToUpdate ->
-                                    seriesViewModel.onUserVolumeUpdate(volumeToUpdate)
                                 },
                                 onOwnedVolumeClick = {
                                     showOwnedBottomSheet = true

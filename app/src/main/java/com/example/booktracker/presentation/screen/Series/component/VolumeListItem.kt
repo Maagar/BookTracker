@@ -17,19 +17,19 @@ import com.example.booktracker.R
 import com.example.booktracker.data.model.Volume
 import com.example.booktracker.data.model.VolumeToInsert
 import com.example.booktracker.data.model.VolumeToUpdate
+import com.example.booktracker.utils.LocalSeriesViewModel
 import com.example.ui.theme.AppTypography
 
 @Composable
 fun VolumeListItem(
     volume: Volume,
     onItemClick: (Volume) -> Unit = {},
-    onUserVolumeInsert: (VolumeToInsert) -> Unit,
-    onUserVolumeUpdate: (VolumeToUpdate) -> Unit,
-    onUserVolumeDelete: (Int) -> Unit = {},
     onOwnedVolumeClick: () -> Unit,
     onReadClick: () -> Unit,
-    isSingleVolume: Boolean
+    isSingleVolume: Boolean,
+
 ) {
+    val seriesViewModel = LocalSeriesViewModel.current
 
     ListItem(
         modifier = Modifier.let { modifier ->
@@ -62,11 +62,11 @@ fun VolumeListItem(
                     }
                 ) {
                     if (!volume.owned && volume.times_read == 0) {
-                        onUserVolumeInsert(
+                        seriesViewModel.onUserVolumeInsert(
                             VolumeToInsert(volume.id, 0, true)
                         )
                     } else if (!volume.owned && volume.times_read > 0 && volume.user_volume_id != null) {
-                        onUserVolumeUpdate(
+                        seriesViewModel.onUserVolumeUpdate(
                             VolumeToUpdate(
                                 volume.user_volume_id,
                                 volume.id,
@@ -92,11 +92,11 @@ fun VolumeListItem(
                     }
                 ) {
                     if (!volume.owned && volume.times_read == 0) {
-                        onUserVolumeInsert(
+                        seriesViewModel.onUserVolumeInsert(
                             VolumeToInsert(volume.id, 1, false)
                         )
                     } else if (volume.owned && volume.times_read == 0 && volume.user_volume_id != null) {
-                        onUserVolumeUpdate(
+                        seriesViewModel.onUserVolumeUpdate(
                             VolumeToUpdate(volume.user_volume_id, volume.id, 1, volume.owned)
                         )
                     } else {
