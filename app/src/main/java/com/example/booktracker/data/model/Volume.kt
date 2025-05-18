@@ -14,7 +14,8 @@ data class Volume(
     var times_read: Int = 0,
     val owned: Boolean = false,
     val synopsis: String?,
-    val read_date: LocalDate? = null
+    val read_date: LocalDate? = null,
+    val rating: Int? = null
 )
 
 @Serializable
@@ -30,6 +31,7 @@ data class VolumeToUpdate(
     val volume_id: Int,
     val times_read: Int,
     val owned: Boolean,
+    val rating: Int?
 )
 
 @Serializable

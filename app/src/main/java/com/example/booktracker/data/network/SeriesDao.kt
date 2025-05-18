@@ -105,7 +105,9 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
     suspend fun insertUserSeries(seriesId: Int): Boolean = withContext(Dispatchers.IO) {
         runCatching {
             val data = mapOf("series_id" to seriesId)
-            supabaseClient.from("user_series").upsert(data, onConflict = "profile_id, series_id")
+            supabaseClient.from("user_series").upsert(data) {
+                onConflict = "profile_id, series_id"
+            }
             true
         }.getOrElse { e ->
             Log.e("insertError", "Error inserting user series", e)
@@ -129,7 +131,8 @@ class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) 
         withContext(Dispatchers.IO) {
             runCatching {
                 val result = supabaseClient.from("user_volumes")
-                    .upsert(volumeToInsert, onConflict = "profile_id, volume_id") {
+                    .upsert(volumeToInsert) {
+                        onConflict = "profile_id, volume_id"
                         select(columns = Columns.list("id"))
                     }.decodeList<VolumeResponse>()
                 result.firstOrNull()?.id

@@ -190,6 +190,7 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
                     volumeToUpdate.volume_id,
                     volumeToUpdate.times_read,
                     volumeToUpdate.owned,
+                    volumeToUpdate.rating
                 )
                 _seriesRefreshFlag.value = result
             } catch (e: Exception) {
@@ -216,17 +217,19 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
         }
     }
 
-    private fun refreshVolume(userVolumeId: Int?, volumeId: Int, timesRead: Int, owned: Boolean) {
+    private fun refreshVolume(userVolumeId: Int?, volumeId: Int, timesRead: Int, owned: Boolean, rating: Int? = null) {
         val updatedVolumesList = _volumes.value.map {volume ->
             if (volume.id == volumeId) {
                 volume.copy(
                     times_read = timesRead,
                     owned = owned,
                     user_volume_id = if (owned || timesRead > 0) userVolumeId else null,
-                    read_date = Clock.System.todayIn(TimeZone.currentSystemDefault())
+                    read_date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
+                    rating = if (owned || timesRead > 0) rating else null
                 )
             } else volume
         }
         _volumes.value = updatedVolumesList
+        _volume.value = updatedVolumesList.find { it.id == volumeId }
     }
 }

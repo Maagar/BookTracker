@@ -58,7 +58,8 @@ fun VolumeBottomSheet(
                                             userVolumeId,
                                             volume.id,
                                             volume.times_read,
-                                            false
+                                            false,
+                                            volume.rating
                                         )
                                     )
                                 } else {
@@ -86,7 +87,8 @@ fun VolumeBottomSheet(
                                             userVolumeId,
                                             volume.id,
                                             0,
-                                            volume.owned
+                                            volume.owned,
+                                            volume.rating
                                         )
                                     )
                                 } else {
@@ -115,7 +117,8 @@ fun VolumeBottomSheet(
                                         userVolumeId,
                                         volume.id,
                                         volume.times_read + 1,
-                                        volume.owned
+                                        volume.owned,
+                                        volume.rating
                                     )
                                 )
                             }

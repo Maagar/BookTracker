@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -108,7 +107,9 @@ fun SetupNavGraph(
                 exitTransition = { slideOutTransition() },
                 popExitTransition = { slideOutTransition() }
             ) {
-                VolumeScreen(seriesViewModel)
+                CompositionLocalProvider(com.example.booktracker.utils.LocalSeriesViewModel provides seriesViewModel) {
+                    VolumeScreen(seriesViewModel)
+                }
             }
         }
     }

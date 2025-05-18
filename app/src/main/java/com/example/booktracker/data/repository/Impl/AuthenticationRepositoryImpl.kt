@@ -2,8 +2,8 @@ package com.example.booktracker.data.repository.Impl
 
 import com.example.booktracker.data.local.UserPreferences
 import com.example.booktracker.data.repository.AuthenticationRepository
-import io.github.jan.supabase.gotrue.Auth
-import io.github.jan.supabase.gotrue.providers.builtin.Email
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.providers.builtin.Email
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.JsonObject
 import javax.inject.Inject

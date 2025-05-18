@@ -1,11 +1,9 @@
 package com.example.booktracker.presentation.screen.Series.component
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,9 +13,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.booktracker.R
 import com.example.booktracker.data.model.Volume
-import com.example.booktracker.data.model.VolumeToInsert
-import com.example.booktracker.data.model.VolumeToUpdate
-import com.example.booktracker.utils.LocalSeriesViewModel
+import com.example.booktracker.presentation.component.VolumeStatusButtons
 import com.example.ui.theme.AppTypography
 
 @Composable
@@ -29,8 +25,6 @@ fun VolumeListItem(
     isSingleVolume: Boolean,
 
 ) {
-    val seriesViewModel = LocalSeriesViewModel.current
-
     ListItem(
         modifier = Modifier.let { modifier ->
             if (!isSingleVolume) modifier.clickable { onItemClick(volume) } else modifier
@@ -47,63 +41,11 @@ fun VolumeListItem(
             )
         },
         trailingContent = {
-            Row {
-                ListItemIcon(
-                    R.drawable.library_books,
-                    if (volume.owned) {
-                        MaterialTheme.colorScheme.tertiary
-                    } else {
-                        MaterialTheme.colorScheme.surfaceVariant
-                    },
-                    if (volume.owned) {
-                        MaterialTheme.colorScheme.onTertiary
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    }
-                ) {
-                    if (!volume.owned && volume.times_read == 0) {
-                        seriesViewModel.onUserVolumeInsert(
-                            VolumeToInsert(volume.id, 0, true)
-                        )
-                    } else if (!volume.owned && volume.times_read > 0 && volume.user_volume_id != null) {
-                        seriesViewModel.onUserVolumeUpdate(
-                            VolumeToUpdate(
-                                volume.user_volume_id,
-                                volume.id,
-                                volume.times_read,
-                                true
-                            )
-                        )
-                    } else {
-                        onOwnedVolumeClick()
-                    }
-                }
-                ListItemIcon(
-                    R.drawable.check,
-                    if (volume.times_read > 0) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.surfaceVariant
-                    },
-                    if (volume.times_read > 0) {
-                        MaterialTheme.colorScheme.onPrimary
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    }
-                ) {
-                    if (!volume.owned && volume.times_read == 0) {
-                        seriesViewModel.onUserVolumeInsert(
-                            VolumeToInsert(volume.id, 1, false)
-                        )
-                    } else if (volume.owned && volume.times_read == 0 && volume.user_volume_id != null) {
-                        seriesViewModel.onUserVolumeUpdate(
-                            VolumeToUpdate(volume.user_volume_id, volume.id, 1, volume.owned)
-                        )
-                    } else {
-                        onReadClick()
-                    }
-                }
-            }
+            VolumeStatusButtons(
+                volume = volume,
+                onOwnedVolumeClick = onOwnedVolumeClick,
+                onReadClick = onReadClick
+            )
         }
     )
 }

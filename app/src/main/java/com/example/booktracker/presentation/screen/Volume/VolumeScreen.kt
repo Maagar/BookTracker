@@ -1,53 +1,50 @@
 package com.example.booktracker.presentation.screen.Volume
 
-import androidx.compose.animation.AnimatedContent
+import android.util.Log
+import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import com.example.booktracker.R
+import com.example.booktracker.data.model.VolumeToUpdate
+import com.example.booktracker.presentation.component.VolumeBottomSheet
+import com.example.booktracker.presentation.component.VolumeStatusButtons
 import com.example.booktracker.presentation.screen.Volume.component.VolumeChangeRow
+import com.example.booktracker.presentation.screen.Volume.component.VolumeHeader
+import com.example.booktracker.presentation.screen.Volume.component.VolumeRating
+import com.example.booktracker.presentation.screen.Volume.component.VolumeSynopsis
 import com.example.booktracker.presentation.ui.viewmodel.SeriesViewModel
-import com.example.ui.theme.AppTypography
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VolumeScreen(
-    seriesViewModel: SeriesViewModel
-) {
+fun VolumeScreen(seriesViewModel: SeriesViewModel) {
     val volume by seriesViewModel.volume.collectAsState()
     val volumeList by seriesViewModel.volumes.collectAsState()
 
     var volumeIndex by remember { mutableIntStateOf(volumeList.indexOf(volume)) }
-
     val isLast = volumeList.lastIndex == volumeIndex
     val isFirst = volumeIndex == 0
 
     var animationDirection by remember { mutableIntStateOf(0) }
+
+    var showOwnedBottomSheet by remember { mutableStateOf(false) }
+    var showReadBottomSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
+
+    VolumeBottomSheet(
+        showOwnedBottomSheet = showOwnedBottomSheet,
+        showReadBottomSheet = showReadBottomSheet,
+        onDismiss = {
+            showOwnedBottomSheet = false
+            showReadBottomSheet = false
+        },
+        sheetState = sheetState,
+        bottomSheetVolume = volume
+    )
 
     Surface {
         Column(
@@ -55,67 +52,39 @@ fun VolumeScreen(
                 .padding(8.dp)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
+            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
         ) {
             AnimatedContent(
                 targetState = volumeIndex,
                 transitionSpec = {
-                    slideInHorizontally(
-                        initialOffsetX = { animationDirection * 2000 },
-                        animationSpec = tween(300)
-                    ) togetherWith slideOutHorizontally(
-                        targetOffsetX = { animationDirection * -2000 },
-                        animationSpec = tween(300)
-                    )
-                }, label = ""
+                    slideInHorizontally { animationDirection * 2000 } + fadeIn() togetherWith
+                            slideOutHorizontally { animationDirection * -2000 } + fadeOut()
+                },
+                label = ""
             ) { targetIndex ->
-                val currentVolume = volumeList.getOrNull(targetIndex)
-                currentVolume?.let { volume ->
-                    Row(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth()
-                    ) {
-                        AsyncImage(
-                            model = volume.cover_url,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .weight(0.4f)
-                                .size(width = 150.dp, height = 200.dp),
-                            fallback = painterResource(R.drawable.no_image_placeholder)
-                        )
-                        Column(
-                            modifier = Modifier
-                                .weight(0.6f)
-                                .padding(start = 8.dp)
-                        ) {
-                            Text(text = volume.title, style = AppTypography.titleLarge)
-                            Row {
-                                Icon(
-                                    painterResource(R.drawable.calendar_month),
-                                    contentDescription = null,
-                                    modifier = Modifier.padding(end = 12.dp)
-                                )
-                                Text(text = "${volume.release_date ?: stringResource(R.string.release_date_not_yet_announced)}")
-                            }
-                            Row {
-                                Icon(
-                                    painterResource(R.drawable.book),
-                                    contentDescription = null,
-                                    modifier = Modifier.padding(end = 12.dp)
-                                )
-                                Text(text = "${volume.read_date ?: stringResource(R.string.not_read_yet)}")
-                            }
-                        }
-                    }
+                volumeList.getOrNull(targetIndex)?.let {
+                    VolumeHeader(it)
                 }
             }
 
-            if (volumeList.size > 1)
+            HorizontalDivider(Modifier.fillMaxWidth())
+
+            volume?.let {
+                VolumeStatusButtons(
+                    volume = it,
+                    onOwnedVolumeClick = { showOwnedBottomSheet = true },
+                    onReadClick = { showReadBottomSheet = true },
+                    equalWeight = true
+                )
+            }
+
+            HorizontalDivider()
+
+            if (volumeList.size > 1) {
                 AnimatedContent(
                     targetState = volumeIndex,
-                    transitionSpec = {
-                        fadeIn(animationSpec = tween(500)) togetherWith fadeOut(animationSpec = tween(500))
-                    }, label = ""
+                    transitionSpec = { fadeIn(tween(500)) togetherWith fadeOut(tween(500)) },
+                    label = ""
                 ) { targetIndex ->
                     VolumeChangeRow(
                         onClickNext = {
@@ -136,24 +105,32 @@ fun VolumeScreen(
                         previousVolume = if (!isFirst) volumeList[volumeIndex - 1] else null
                     )
                 }
+            }
+
+            HorizontalDivider()
+
+            volume?.let { v ->
+                if (v.times_read > 0) {
+                    VolumeRating(v.rating ?: 0, {
+                        Log.d("test", "${v}")
+                        seriesViewModel.onUserVolumeUpdate(
+                            VolumeToUpdate(
+                                id = v.user_volume_id!!,
+                                volume_id = v.id,
+                                times_read = v.times_read,
+                                owned = v.owned,
+                                rating = it
+                            )
+                        )
+                    })
+                }
+            }
+
+            HorizontalDivider()
+
             AnimatedContent(targetState = volumeIndex, label = "") { targetIndex ->
                 val currentVolume = volumeList.getOrNull(targetIndex)
-                Column {
-                    Card(modifier = Modifier.padding(8.dp)) {
-                        Text(
-                            if (currentVolume?.synopsis.isNullOrEmpty()) {
-                                stringResource(R.string.no_synopsis_available)
-                            } else {
-                                currentVolume?.synopsis
-                                    ?: stringResource(R.string.no_synopsis_available)
-                            },
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxWidth(),
-                            style = AppTypography.bodyMedium,
-                        )
-                    }
-                }
+                VolumeSynopsis(currentVolume?.synopsis)
             }
         }
     }

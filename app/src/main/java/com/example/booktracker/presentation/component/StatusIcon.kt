@@ -1,4 +1,4 @@
-package com.example.booktracker.presentation.screen.Series.component
+package com.example.booktracker.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,11 +20,12 @@ fun ListItemIcon(
     painterResource: Int,
     backgroundColor: Color,
     iconColor: Color,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val iconSize = 30.dp
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(44.dp)
             .padding(4.dp)
             .clip(CircleShape)
@@ -32,6 +33,7 @@ fun ListItemIcon(
             .clickable {
                 onClick()
             }
+
     ) {
         Icon(
             painterResource(painterResource),
