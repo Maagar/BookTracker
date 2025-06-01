@@ -217,8 +217,14 @@ class SeriesViewModel @Inject constructor(private val seriesRepository: SeriesRe
         }
     }
 
-    private fun refreshVolume(userVolumeId: Int?, volumeId: Int, timesRead: Int, owned: Boolean, rating: Int? = null) {
-        val updatedVolumesList = _volumes.value.map {volume ->
+    private fun refreshVolume(
+        userVolumeId: Int?,
+        volumeId: Int,
+        timesRead: Int,
+        owned: Boolean,
+        rating: Int? = null
+    ) {
+        val updatedVolumesList = _volumes.value.map { volume ->
             if (volume.id == volumeId) {
                 volume.copy(
                     times_read = timesRead,

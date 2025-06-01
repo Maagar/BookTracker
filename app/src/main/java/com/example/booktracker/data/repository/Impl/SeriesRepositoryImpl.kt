@@ -69,4 +69,8 @@ class SeriesRepositoryImpl @Inject constructor(private val seriesDao: SeriesDao)
         val offset = page * pageSize
         return seriesDao.getUpcomingVolumes(offset, pageSize)
     }
+
+    override suspend fun getRecommendedSeries(): List<Series> {
+        return seriesDao.getRecommendedSeries()
+    }
 }

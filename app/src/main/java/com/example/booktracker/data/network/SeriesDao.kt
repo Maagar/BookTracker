@@ -20,6 +20,11 @@ import javax.inject.Inject
 
 class SeriesDao @Inject constructor(private val supabaseClient: SupabaseClient) {
 
+    suspend fun getRecommendedSeries(): List<Series> =
+        withContext(Dispatchers.IO) {
+            supabaseClient.postgrest.rpc("get_series_by_ids").decodeList<Series>()
+        }
+
     suspend fun getSeriesPaginated(offset: Int, limit: Int, searchQuery: String): List<Series> =
         withContext(Dispatchers.IO) {
             supabaseClient.postgrest.rpc(

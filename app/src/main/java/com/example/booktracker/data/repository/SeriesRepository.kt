@@ -21,4 +21,6 @@ interface SeriesRepository {
     suspend fun updateUserVolume(volumeToUpdate: VolumeToUpdate): Boolean
     suspend fun deleteUserVolume(userVolumeId: Int): Boolean
     suspend fun getUpcomingVolumes(page: Int, pageSize: Int): List<UpcomingVolume>
+    suspend fun getRecommendedSeries(): List<Series>
+
 }

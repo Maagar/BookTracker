@@ -13,14 +13,19 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.booktracker.presentation.screen.Discover.component.Recommendations
 import com.example.booktracker.presentation.screen.Discover.component.SeriesListItem
 import com.example.booktracker.presentation.screen.Discover.component.SeriesSearchBar
 import com.example.booktracker.presentation.ui.viewmodel.SeriesViewModel
@@ -35,6 +40,9 @@ fun DiscoverScreen(
 
     val seriesList by discoverViewModel.series.collectAsState()
     val listState = rememberLazyListState()
+    val recommendations by discoverViewModel.recommendations.collectAsState()
+
+    var recommendationState by remember { mutableStateOf(false) }
 
     val query by discoverViewModel.query.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -66,6 +74,43 @@ fun DiscoverScreen(
                 keyboardController?.hide()
                 focusManager.clearFocus()
             })
+
+        Recommendations(
+            recommendations,
+            recommendationState,
+            onIconClick = {
+                recommendationState = !recommendationState
+                if (recommendationState && recommendations.isEmpty()) {
+                    discoverViewModel.getRecommendedSeries()
+                }
+            },
+            {
+                seriesViewModel.selectSeries(it)
+                seriesViewModel.fetchVolumes(it.id)
+                seriesViewModel.fetchSeriesInfo(it.id)
+                toSeriesScreen()
+            },
+            onFollowSeries = {
+                seriesViewModel.onFollowSeries(it.id) { success ->
+                    if (success) {
+                        discoverViewModel.refreshSeries(it.id)
+                        discoverViewModel.refreshRecommendations(it.id)
+                    }
+                }
+            },
+            onUnfollowSeries = {
+                seriesViewModel.onUnfollowSeries(it.id) { success ->
+                    if (success) {
+                        discoverViewModel.refreshSeries(it.id)
+                        discoverViewModel.refreshRecommendations(it.id)
+                    }
+                }
+            },
+            onTextClick = {
+                discoverViewModel.getRecommendedSeries()
+            }
+        )
+
         PullToRefreshBox(state = refreshState, onRefresh = {
             discoverViewModel.setIsRefreshing()
             discoverViewModel.fetchSeries()
@@ -77,12 +122,13 @@ fun DiscoverScreen(
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(seriesList) { series ->
-                    SeriesListItem(series = series, onItemClick = {
-                        seriesViewModel.selectSeries(series)
-                        seriesViewModel.fetchVolumes(series.id)
-                        seriesViewModel.fetchSeriesInfo(series.id)
-                        toSeriesScreen()
-                    },
+                    SeriesListItem(
+                        series = series, onItemClick = {
+                            seriesViewModel.selectSeries(series)
+                            seriesViewModel.fetchVolumes(series.id)
+                            seriesViewModel.fetchSeriesInfo(series.id)
+                            toSeriesScreen()
+                        },
                         onFollowSeries = {
                             seriesViewModel.onFollowSeries(series.id) { success ->
                                 if (success) {
